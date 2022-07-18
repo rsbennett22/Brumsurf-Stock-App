@@ -6,5 +6,5 @@ urlpatterns = [
     path('wetsuit/<str:brand>&<str:size>&<str:gender>&<int:number>', views.wetsuit, name='wetsuit'),
     path('qrFormsPage/', views.qrForms, name="qrForms"),
     path('wetsuitFormPage/', views.wetsuitForm, name="wetsuitForm"),
-    path('generateWetsuitQR/<str:brand>&<str:size>&<str:gender>&<int:number>', views.generateWetsuitQR, name='generateWetsuitQR'),
+    path('generateWetsuitQR/<str:brand>&<str:size>&<str:gender>&<int:number>', views.generateWetsuitQR, name='wetsuit'),
 ]
