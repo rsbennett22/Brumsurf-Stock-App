@@ -8,9 +8,8 @@
     <title>Brumsurf Stock App</title>
 </head>
 <body>
-    <h2>The stock type is : {{stockType}}</h2>
-    <h2>The size is : {{size}}</h2>
-    <h2>The brand is : {{brand}}</h2>
-    <img src="{% static 'qrcodes\\oneilmedium.png' %}">
+
+    <h1>Stock QR Forms</h1>
+    <button id="wetsuitForm" onclick="location.href={% url 'wetsuitForm' %}">Wetsuits Stock Form</button>
 </body>
 </html>

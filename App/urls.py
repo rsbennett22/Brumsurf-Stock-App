@@ -2,7 +2,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    #path('stockData/<str:stockType>&<int:total>', views.qrview, name='stockData'),
-    path('wetsuit/<str:brand>&<str:size>', views.wetsuit, name='wetsuit'),
-    path('createWetsuitQR/<str:brand>&<str:size>', views.createWetsuitQR, name='createWetsuitQR'),
+    path('', views.index, name='index'),
+    path('wetsuit/<str:brand>&<str:size>&<str:gender>&<int:number>', views.wetsuit, name='wetsuit'),
+    path('qrFormsPage/', views.qrForms, name="qrForms"),
+    path('wetsuitFormPage/', views.wetsuitForm, name="wetsuitForm"),
+    path('generateWetsuitQR/<str:brand>&<str:size>&<str:gender>&<int:number>', views.generateWetsuitQR, name='wetsuit'),
 ]

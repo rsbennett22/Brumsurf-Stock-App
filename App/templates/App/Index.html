@@ -8,12 +8,8 @@
     <title>Brumsurf Stock App</title>
 </head>
 <body>
-    <h2>The stock type is : {{stockType}}</h2>
-    <h2>The brand is : {{brand}}</h2>
-    <h2>The size is : {{size}}</h2>
-    <h2>The gender is : {{gender}}</h2>
-    <h2>The number is : {{number}}</h2>
-    <h2>{{fileName}}</h2>
-    <img src="{% static qrImg %}">
+    <h1>Brumsurf Stock App</h1>
+    <br>
+    <button id="qrForms" onclick="location.href={% url 'qrForms' %}">Stock Forms Page</button>
 </body>
 </html>

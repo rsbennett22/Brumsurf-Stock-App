@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brumsurf Stock App</title>
+</head>
+<body>
+    <h1>Generate Wetsuit QR Code</h1>
+    <form id="wetsuitForm"  onsubmit="generateQRCode(); return false">
+        Brand: <input type="text" id="brand" name="brand" required>
+        <br>
+        Gender: <input type="text" id="gender" name="gender" required>
+        <br>
+        Size: <input type="text" id="size" name="size" required>
+        <br>
+        Number: <input type="number" id="num" name="num" min="0" required>
+        <br>
+        <br>
+        <input type="submit" value="Generate QR">
+    </form>
+    <script>
+        function generateQRCode() {
+            const sizesMale = ['small', 'medium', 'medium-tall', 'large', 'x-large'];
+            const sizesFemale = ['4', '6', '8', '10', '12', '14', '16'];
+            const brands = ['oneil', 'twobarefeet', 'tiki'];
+            var brand = document.getElementById("brand").value.toLowerCase();
+            var size = document.getElementById("size").value.toLowerCase();
+            var gender = document.getElementById("gender").value.toLowerCase();
+            var number = document.getElementById("num").value;
+
+            //check for matching brand value
+            if(brands.includes(brand))
+            {
+                //check what gender input (if correct!)
+                if(gender=='male')
+                {
+                    //check input size value correct
+                    if(sizesMale.includes(size))
+                    {
+                        //create qr code for wetsuit
+                        window.location.assign('../generateWetsuitQR/'+brand+"&"+size+"&"+gender+"&"+number);
+                    }
+                    //size value incorrect for male input
+                    else{
+                        alert("Male size must be: "+sizesMale);
+                    }
+                }
+                //gender is female
+                else if(gender=='female')
+                {
+                    //check input size value correct
+                    if(sizesFemale.includes(size))
+                    {
+                        //create qr code for wetsuit
+                        window.location.assign('../generateWetsuitQR/'+brand+"&"+size+"&"+gender+"&"+number);
+                    }
+                    //size value incorrect for female input
+                    else{
+                        alert("Male size must be: "+sizesFemale);
+                    }
+                }
+                else {
+                    alert("Gender must be: male or female!");
+                }
+            }
+            //Incorrect brands value
+            else {
+                alert("Brand must be: "+brands);
+            }
+        }
+    </script>
+</body>
+</html>
