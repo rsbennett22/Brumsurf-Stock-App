@@ -4,7 +4,7 @@ import qrcode
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Index")
+    return render(request, 'App/Index.html')
 
 def wetsuit(request, brand, size, gender, number):
     fileName = brand+size+gender+number+'.png'
