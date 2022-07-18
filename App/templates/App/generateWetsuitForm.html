@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brumsurf Stock App</title>
+</head>
+<body>
+    <h1>Generate Wetsuit QR Code</h1>
+    <form id="wetsuitForm"  onsubmit="return generateQRCode()">
+        Brand: <input type="text" id="brand" name="brand" required>
+        <br>
+        Size: <input type="text" id="size" name="size" required>
+        <br>
+        Gender: <input type="text" id="gender" name="gender" required>
+        <br>
+        Number: <input type="number" id="num" name="num" min="0" required>
+        <br>
+        <br>
+        <input type="submit" value="Generate QR">
+    </form>
+    <script>
+        function generateQRCode() {
+            const sizesMale = ['small', 'medium', 'medium-tall', 'large', 'x-large'];
+            const sizesFemale = ['4', '6', '8', '10', '12', '14', '16'];
+            var brand = document.getElementById("brand").value;
+            var size = document.getElementById("size").value.toLowerCase();
+            var gender = document.getElementById("gender").value.toLowerCase();
+            var number = document.getElementById("num").value;
+
+            //check for matching gender value
+            if(gender=='male') {
+                //check if user inputted size matches a size in array
+                var matched = false;
+                var start = 0;
+                while(!matched && start < 4){
+                    if(size == sizesMale[start]){
+                        matched=true;
+                    }
+                    else{
+                        start+=1;
+                    }
+                    console.log(start)
+                }
+                if(start >= 4){
+                    alert("Male size must be: "+sizesMale);
+                }
+                else{
+                    //after passing all checks, load generate qr code webpage for wetsuits with params input in form
+                    //call generate wetsuit qr endpoint from here
+                    console.log("TEST");
+                    window.location.replace("192.168.0.58:8000/generateWetsuitQR/"+brand+"&"+size+"&"+gender+"&"+number);
+                }
+            }
+            else if(gender=='female') {
+                //check if user inputted size matches a size in array
+                var matched = false;
+                var start = 0;
+                while(!matched && start < 4){
+                    if(size == sizesFemale[start]){
+                        matched=true;
+                    }
+                    else{
+                        start+=1;
+                    }
+                    console.log(start)
+                }
+                if(start >= 6){
+                    alert("Female size must be: "+sizesFemale);
+                }
+                else{
+                    //after passing all checks, load generate qr code webpage for wetsuits with params input in form
+                    //call generate wetsuit qr endpoint from here
+                    window.location.replace("192.168.0.58:8000/generateWetsuitQR/"+brand+"&"+size+"&"+gender+"&"+number);
+                }
+            }
+            else{
+                alert("Gender must be either: male, female");
+            }
+        }
+    </script>
+</body>
+</html>

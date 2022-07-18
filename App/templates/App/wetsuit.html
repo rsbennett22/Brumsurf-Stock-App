@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,8 +8,14 @@
     <title>Brumsurf Stock App</title>
 </head>
 <body>
+    <p>THIS PAGE WILL HAVE ALL DATA ABOUT WETSUIT WITH OPTIONS - GET TO FROM WETSUIT</p>
+
     <h2>The stock type is : {{stockType}}</h2>
-    <h2>The size is : {{size}}</h2>
     <h2>The brand is : {{brand}}</h2>
+    <h2>The size is : {{size}}</h2>
+    <h2>The gender is : {{gender}}</h2>
+    <h2>The number is : {{number}}</h2>
+    <h2>{{fileName}}</h2>
+    <img src="{% static qrImg %}">
 </body>
 </html>
