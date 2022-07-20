@@ -1,4 +1,3 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,8 +7,8 @@
     <title>Brumsurf Stock App</title>
 </head>
 <body>
-    <h1>Brumsurf Stock App</h1>
-    <br>
-    <button id="qrForms" onclick="location.href={% url 'stockFormsPage' %}">Stock Forms Page</button>
+    <button onclick="location.href='/'">Home</button>
+    <h2>Error! Invalid pk!</h2>
+    <button onclick="location.href={% url 'wetsuitFormPage' %}">Wetsuit Form</button>
 </body>
 </html>
