@@ -8,6 +8,9 @@
 </head>
 <body>
     <h1>Generate Wetsuit QR Code</h1>
+    <button onclick="location.href='/'">Home</button>
+    <br>
+    <br>
     <form id="wetsuitForm"  onsubmit="generateQRCode(); return false">
         Brand: <input type="text" id="brand" name="brand" required>
         <br>
@@ -15,7 +18,7 @@
         <br>
         Size: <input type="text" id="size" name="size" required>
         <br>
-        Number: <input type="number" id="num" name="num" min="0" required>
+        Number: <input type="number" id="num" name="num" min="1" required>
         <br>
         <br>
         <input type="submit" value="Generate QR">
