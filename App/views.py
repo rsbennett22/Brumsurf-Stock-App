@@ -1,6 +1,5 @@
 from django.shortcuts import render
-from django.urls import reverse
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponse
 import qrcode
 from os.path import exists
 from .models import StockItem, Wetsuit
@@ -27,23 +26,6 @@ def qrForms(request):
 
 def wetsuitForm(request):
     return render(request, 'App/generateWetsuitForm.html')
-
-###def generateWetsuitQR(request, brand, size, gender, number):
-    fileName = brand+str(size)+gender+str(number)+'.png'
-    qrPath = 'qrcodes\\'+brand+size+gender+str(number)+'.png'
-    print("Checking if QR code has already been generated...")
-    if(checkForQR(fileName)):
-        print("Matching QR code found. Redirecting to wetsuit info page...")
-        return render(request, 'App/redirectToWetsuitPage.html', {'stockType' : 'wetsuit', 'size' : size, 'brand' : brand ,'number' : number, 'gender' : gender, 'qrPath' : qrPath, 'fileName' : fileName})
-    else:
-        print("QR code not found")
-        print("Generating QR code...")
-        #Generate qrcode from data
-        qrData = 'http://192.168.0.58:8000/wetsuit/'+brand+'&'+str(size)+'&'+gender+'&'+str(number)
-        qr = qrcode.make(qrData)
-        qr.save('static\\qrcodes\\'+fileName)
-        print("QR code generated. Redirecting to wetsuit info page...")
-        return render(request, 'App/redirectToWetsuitPage.html', {'stockType' : 'wetsuit', 'size' : size, 'brand' : brand ,'number' : number, 'gender' : gender, 'qrPath' : qrPath, 'fileName' : fileName})
 
 def addNewWetsuit(request):
     if(request.method=='POST'):

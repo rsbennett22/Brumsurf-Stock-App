@@ -2,23 +2,6 @@ from django.db import models
 from django.core.validators import MinValueValidator, MinLengthValidator
 # Create your models here.
 
-#Stock model info:
-
-#Wetsuits: Brand, Size, Gender, Number
-#Surfboards: Brand, Size, Number
-#Surfskates: Brand, Size, Number
-#Boots: Brand, Size, Number
-#Gloves: Brand, Size, Number
-#Hoods: Brand, Size, Number
-
-#Signing in and out info:
-
-#On-Trip
-#Signed Out
-#Signed In
-#Name
-#Student ID
-
 class StockItem(models.Model):
     stockType = models.CharField(max_length=15)
     brand = models.CharField(max_length=30)
