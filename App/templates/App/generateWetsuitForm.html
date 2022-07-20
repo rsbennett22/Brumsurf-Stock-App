@@ -6,71 +6,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brumsurf Stock App</title>
 </head>
-<body>
-    <h1>Generate Wetsuit QR Code</h1>
+<body onload="updateSizeOptions()">
+    <h1>Add New Wetsuit</h1>
     <button onclick="location.href='/'">Home</button>
     <br>
     <br>
-    <form id="wetsuitForm"  onsubmit="generateQRCode(); return false">
-        Brand: <input type="text" id="brand" name="brand" required>
+    <form id="wetsuitForm" action="{% url 'addNewWetsuit' %}" method="POST">
+        {% csrf_token %}
+        Brand: <select id="brand" name="brand" required>
+            <option value="oneil">Oneil</option>
+            <option value="tiki">Tiki</option>
+            <option value="twobarefeet">Two Bare Feet</option>
+            <option value="needessentials">NeedEssentials</option>
+        </select>
         <br>
-        Gender: <input type="text" id="gender" name="gender" required>
+        Gender: <select onchange="updateSizeOptions()" id="gender" name="gender" required>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
         <br>
-        Size: <input type="text" id="size" name="size" required>
+        Size: <select id="size" name="size" required></select>
         <br>
         Number: <input type="number" id="num" name="num" min="1" required>
         <br>
-        <br>
-        <input type="submit" value="Generate QR">
+        <input type="submit" value="Submit">
     </form>
     <script>
-        function generateQRCode() {
+        function updateSizeOptions() {
             const sizesMale = ['small', 'medium', 'medium-tall', 'large', 'x-large'];
             const sizesFemale = ['4', '6', '8', '10', '12', '14', '16'];
-            const brands = ['oneil', 'twobarefeet', 'tiki'];
-            var brand = document.getElementById("brand").value.toLowerCase();
-            var size = document.getElementById("size").value.toLowerCase();
-            var gender = document.getElementById("gender").value.toLowerCase();
-            var number = document.getElementById("num").value;
-
-            //check for matching brand value
-            if(brands.includes(brand))
-            {
-                //check what gender input (if correct!)
-                if(gender=='male')
-                {
-                    //check input size value correct
-                    if(sizesMale.includes(size))
-                    {
-                        //create qr code for wetsuit
-                        window.location.assign('../generateWetsuitQR/'+brand+"&"+size+"&"+gender+"&"+number);
-                    }
-                    //size value incorrect for male input
-                    else{
-                        alert("Male size must be: "+sizesMale);
-                    }
-                }
-                //gender is female
-                else if(gender=='female')
-                {
-                    //check input size value correct
-                    if(sizesFemale.includes(size))
-                    {
-                        //create qr code for wetsuit
-                        window.location.assign('../generateWetsuitQR/'+brand+"&"+size+"&"+gender+"&"+number);
-                    }
-                    //size value incorrect for female input
-                    else{
-                        alert("Male size must be: "+sizesFemale);
-                    }
-                }
-                else {
-                    alert("Gender must be: male or female!");
+            //get the gender select field's selected value
+            var genderField = document.getElementById('gender');
+            var sizeField = document.getElementById('size');
+            var gender = genderField.value;
+            console.log(gender)
+            var optionsTotal = sizeField.length;
+            //check if any options present
+            if(optionsTotal!=0) {
+                //remove options present
+                for(i=0; i<=optionsTotal-1; i++) {
+                    //remove option 0 from select field
+                    sizeField.remove(0);
                 }
             }
-            //Incorrect brands value
+            //check what gender is selected
+            if(gender=='male') {
+                //add options for male sizes
+                for(i=0; i<=sizesMale.length-1; i++) {
+                    var newOption = document.createElement('option');
+                    newOption.value = sizesMale[i];
+                    newOption.innerHTML = sizesMale[i];
+                    sizeField.appendChild(newOption)
+                }
+            }
             else {
-                alert("Brand must be: "+brands);
+                //add options for female sizes
+                for(i=0; i<=sizesFemale.length-1; i++) {
+                    var newOption = document.createElement('option');
+                    newOption.value = sizesFemale[i];
+                    newOption.innerHTML = sizesFemale[i];
+                    sizeField.appendChild(newOption)
+                }
             }
         }
     </script>
