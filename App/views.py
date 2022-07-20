@@ -10,8 +10,16 @@ def index(request):
 
 def wetsuit(request, brand, size, gender, number):
     fileName = brand+str(size)+gender+str(number)+'.png'
-    qrPath = 'qrcodes\\'+brand+str(size)+gender+str(number)+'.png'
-    return render(request, 'App/wetsuit.html', {'stockType' : 'Wetsuit', 'brand' : brand, 'size' : size, 'gender' : gender, 'number' : number, 'fileName' : fileName, 'qrPath' : qrPath})
+    print("Checking for QR code...")
+    if(checkForQR(fileName)):
+        #If QR code in image folder, load info page
+        print("QR code found. Loading info page")
+        qrPath = 'qrcodes\\'+brand+str(size)+gender+str(number)+'.png'
+        return render(request, 'App/wetsuit.html', {'stockType' : 'Wetsuit', 'brand' : brand, 'size' : size, 'gender' : gender, 'number' : number, 'fileName' : fileName, 'qrPath' : qrPath})
+    else:
+        #If QR code not in image folder, load error page
+        print("QR code not found!")
+        return render(request, 'App/qrErrorPage.html')
 
 def qrForms(request):
     return render(request, 'App/qrForms.html')
