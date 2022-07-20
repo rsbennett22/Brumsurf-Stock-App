@@ -49,6 +49,8 @@ def addNewWetsuit(request):
             #create QR code from data
             else:
                 generateWetsuitQR(newWetsuit.brand, newWetsuit.gender, newWetsuit.wetsuitSize, newWetsuit.number, fileName)
+                #add qr code to model instance
+                newWetsuit.qrCode=fileName
                 newWetsuit.save()
                 #redirect to wetsuit info page
                 return wetsuit(request, newWetsuit.brand, newWetsuit.gender, newWetsuit.wetsuitSize, newWetsuit.number)
