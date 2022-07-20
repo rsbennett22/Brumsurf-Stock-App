@@ -35,9 +35,6 @@ class StockItem(models.Model):
         return (self.stockType+'_'+self.brand+'_'+self.size+'_'+str(self.number))
 
 class Wetsuit(StockItem):
-    size=None
     gender = models.CharField(max_length=6)
-    wetsuitSize = models.CharField(max_length=10)
-
     def __str__(self):
-        return (self.stockType+'_'+self.brand+'_'+self.gender+'_'+self.wetsuitSize+'_'+str(self.number))
+        return (self.stockType+'_'+self.brand+'_'+self.gender+'_'+self.size+'_'+str(self.number))

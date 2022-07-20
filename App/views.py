@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 import qrcode
 from os.path import exists
+from os import remove
 from .models import StockItem, Wetsuit
 
-# Create your views here.
 def index(request):
     return render(request, 'App/Index.html')
 
@@ -15,7 +15,10 @@ def wetsuit(request, brand, gender, size, number):
         #If QR code in image folder, load info page
         print("QR code found. Loading info page")
         qrPath = 'qrcodes\\'+brand+gender+str(size)+str(number)+'.png'
-        return render(request, 'App/wetsuit.html', {'stockType' : 'Wetsuit', 'brand' : brand, 'gender' : gender, 'size' : size, 'number' : number, 'fileName' : fileName, 'qrPath' : qrPath})
+        #Get pk of this wetsuit
+        thisWetsuit = Wetsuit.objects.get(brand=brand, gender=gender, size=size, number=number)
+        pk = thisWetsuit.pk
+        return render(request, 'App/wetsuit.html', {'stockType' : 'wetsuit', 'brand' : brand, 'gender' : gender, 'size' : size, 'number' : number, 'qrPath' : qrPath, 'pk' : pk})
     else:
         #If QR code not in image folder, load error page
         print("QR code not found!")
@@ -31,29 +34,28 @@ def addNewWetsuit(request):
     if(request.method=='POST'):
         if(request.POST.get('brand')):
             newWetsuit=Wetsuit()
-            newWetsuit.stockType='Wetsuit'
+            newWetsuit.stockType='wetsuit'
             newWetsuit.brand=request.POST.get('brand')
             newWetsuit.gender=request.POST.get('gender')
-            newWetsuit.wetsuitSize=request.POST.get('size')
+            newWetsuit.size=request.POST.get('size')
             newWetsuit.number=request.POST.get('num')
-
-            fileName=newWetsuit.brand+newWetsuit.gender+newWetsuit.wetsuitSize+newWetsuit.number+'.png'
+            fileName=newWetsuit.brand+newWetsuit.gender+newWetsuit.size+newWetsuit.number+'.png'
             print(newWetsuit.brand)
             print(newWetsuit.gender)
-            print(newWetsuit.wetsuitSize)
+            print(newWetsuit.size)
             print(newWetsuit.number)
-            #check if QR code matching info exists
+            #Check if QR code matching info exists
             if(checkForQR(fileName)):
-                #load wetsuit page wetsuit item's info
-                return wetsuit(request, newWetsuit.brand, newWetsuit.gender, newWetsuit.wetsuitSize, newWetsuit.number)
-            #create QR code from data
+                #Load wetsuit page wetsuit item's info
+                return wetsuit(request, newWetsuit.brand, newWetsuit.gender, newWetsuit.size, newWetsuit.number)
+            #Create QR code from data
             else:
-                generateWetsuitQR(newWetsuit.brand, newWetsuit.gender, newWetsuit.wetsuitSize, newWetsuit.number, fileName)
-                #add qr code to model instance
+                generateWetsuitQR(newWetsuit.brand, newWetsuit.gender, newWetsuit.size, newWetsuit.number, fileName)
+                #Add qr code to model instance
                 newWetsuit.qrCode=fileName
                 newWetsuit.save()
-                #redirect to wetsuit info page
-                return wetsuit(request, newWetsuit.brand, newWetsuit.gender, newWetsuit.wetsuitSize, newWetsuit.number)
+                #Redirect to wetsuit info page
+                return wetsuit(request, newWetsuit.brand, newWetsuit.gender, newWetsuit.size, newWetsuit.number)
         else:
             return HttpResponse('Bad request...')
 
@@ -72,3 +74,35 @@ def checkForQR(fileName):
         return True
     else:
         return False
+
+def deleteQRCode(fileName):
+    path='static\\qrcodes\\'+fileName
+    if(exists(path)):
+        #Delete file
+        remove(path)
+        return print("File deleted successfully!")
+    else:
+        return print("Error! File does not exist!")
+
+def deleteItem(request):
+    pk = request.POST.get('pk')
+    itemToDelete = StockItem(pk=pk)
+    if(request.method=='POST'):
+        print('Deleting item from database...')
+        stockType = request.POST.get('stockType')
+        brand = request.POST.get('brand')
+        size = request.POST.get('size')
+        number = request.POST.get('number')
+        if(stockType=='wetsuit'):
+            print('Deleting QR code...')
+            gender = request.POST.get('gender')
+            #Delete associated QR code
+            fileName=brand+gender+size+number+'.png'
+            deleteQRCode(fileName)
+        else:
+            fileName=brand+size+number+'.png'
+            deleteQRCode(fileName)
+
+        #Delete item from db
+        itemToDelete.delete()
+        return redirect('/')

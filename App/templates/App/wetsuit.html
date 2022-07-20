@@ -7,14 +7,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brumsurf Stock App</title>
 </head>
-<body>
+<body onload="loadWetsuitInfoPage()">
     <button onclick="location.href='/'">Home</button>
     <h2>The stock type is : {{stockType}}</h2>
-    <h2>The brand is : {{brand}}</h2>
-    <h2>The size is : {{size}}</h2>
-    <h2>The gender is : {{gender}}</h2>
-    <h2>The number is : {{number}}</h2>
-    <h2>{{fileName}}</h2>
+    <h2 id="brand" brand="{{brand}}">The brand is : {{brand}}</h2>
+    <h2 id="gender" gender="{{gender}}">The gender is : {{gender}}</h2>
+    <h2 id="size" size="{{size}}">The size is : {{size}}</h2>
+    <h2 id="number" number="{{number}}">The number is : {{number}}</h2>
+    <h2>PK: {{pk}}</h2>
     <img src="{% static qrPath %}">
+    <br>
+
+    <form id="deleteItem" onsubmit="return confirm('Are you sure?')" action="{% url 'deleteItem' %}" method="POST">
+        {% csrf_token %}
+        <input name="stockType" value={{stockType}} hidden>
+        <input name="brand" value={{brand}} hidden>
+        <input name="gender" value={{gender}} hidden>
+        <input name="size" value={{size}} hidden>
+        <input name="number" value={{number}} hidden>
+        <input name="pk" value={{pk}} hidden>
+        <button type="submit">Delete</button>
+    </form>
+
+    <script>
+        function loadWetsuitInfoPage() {
+            if(window.location.href == 'http://192.168.0.58:8000/addNewWetsuit/')
+            {
+                brand = document.getElementById('brand').getAttribute('brand');
+                gender = document.getElementById('gender').getAttribute('gender');
+                size = document.getElementById('size').getAttribute('size');
+                number = document.getElementById('number').getAttribute('number');
+                console.log(brand, gender, size, number);
+                window.location.replace('../wetsuit/'+brand+'&'+gender+'&'+size+'&'+number);
+            }
+        }
+    </script>
 </body>
 </html>
