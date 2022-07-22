@@ -106,7 +106,17 @@ def addNewWetsuit(request):
             else:
                 return print(bcolors.FAIL+"Error, number is None!"+bcolors.ENDC)
             
-            fileName=newWetsuit.brand+newWetsuit.gender+newWetsuit.size+newWetsuit.number+'.png'
+
+            #Implement feature that checks if wetsuit number already exists, if does, loop to find the next possible number
+            print(bcolors.OKGREEN+"Checking if wetsuit number is unique..."+bcolors.ENDC)
+            try:
+                numWetsuit = Wetsuit.objects.get(number=newWetsuit.number)
+                print(bcolors.WARNING+"A wetsuit with that number exists!"+bcolors.ENDC)
+                #Get the next available wetsuit number
+                newWetsuit.number = getNextWetsuitNum(1)
+            except:
+                print(bcolors.OKBLUE+"Wetsuit number is ok!"+bcolors.ENDC)
+            fileName=newWetsuit.brand+newWetsuit.gender+str(newWetsuit.size)+str(newWetsuit.number)+'.png'
             print(bcolors.OKGREEN+"Checking if QR code matching "+fileName+" exists..."+bcolors.ENDC)
             #Check if QR code matching info exists
             if(checkForQR(fileName)):
@@ -268,3 +278,13 @@ def inventory(request):
     wetsuits = Wetsuit.objects.all().order_by('number')
     #surfboards = StockItem.objects.get(stockType='surfboard')
     return render(request, 'App/inventory.html', {'wetsuits' : wetsuits})
+
+def getNextWetsuitNum(number):
+    try:
+        #If no exception, recursive call number+1
+        availableNum = Wetsuit.objects.get(number=number)
+        num = number + 1
+        return getNextWetsuitNum(num)
+    except:
+        print(bcolors.FAIL+"NUMBER: "+str(number)+bcolors.ENDC)
+        return number

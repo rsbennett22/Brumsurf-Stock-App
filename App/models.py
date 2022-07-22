@@ -23,7 +23,7 @@ class StockItem(models.Model):
     stockType = models.CharField(max_length=15)
     brand = models.CharField(max_length=30)
     size = models.CharField(max_length=10)
-    number = models.PositiveBigIntegerField(default=0, validators=[MinValueValidator(1)])
+    number = models.PositiveBigIntegerField(default=0, validators=[MinValueValidator(1)], unique=True)
     onTrip = models.BooleanField(default=False)
     signedOut = models.BooleanField(default=False)
     signedIn = models.BooleanField(default=True)
