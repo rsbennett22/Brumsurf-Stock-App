@@ -9,5 +9,10 @@
 </head>
 <body>
     <h1>Inventory</h1>
+    <button onclick="location.href='/'">Home</button>
+    <br><br>
+    {% for stock in stockItems %}
+    {{ stock.stockType }} {{ stock.brand }}
+    {% endfor %}
 </body>
 </html>

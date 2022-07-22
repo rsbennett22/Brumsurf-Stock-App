@@ -1,7 +1,4 @@
-from base64 import b32hexdecode
-from email.quoprimime import body_check
-import re
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import qrcode
 from os.path import exists
@@ -121,6 +118,8 @@ def addNewWetsuit(request):
                 generateWetsuitQR(newWetsuit.brand, newWetsuit.gender, newWetsuit.size, newWetsuit.number, fileName)
                 #Add qr code to model instance
                 newWetsuit.qrCode=fileName
+                #Add url to model instance
+                newWetsuit.url='http://'+IP+':8000/wetsuit/'+newWetsuit.brand+'&'+newWetsuit.gender+'&'+str(newWetsuit.size)+'&'+str(newWetsuit.number)
                 print(bcolors.OKGREEN+"Adding new wetsuit to database..."+bcolors.ENDC)
                 newWetsuit.save()
                 print(bcolors.OKBLUE+"Successfully added new wetsuit to database!"+bcolors.ENDC)
@@ -193,10 +192,8 @@ def deleteItem(request, pk):
 
 def signOut(request, pk):
     print(bcolors.OKGREEN+"Attempting to sign out item..."+bcolors.ENDC)
-    print(bcolors.OKGREEN+"Getting previous url..."+bcolors.ENDC)
-    prevUrl = request.POST.get('url')
-    print(bcolors.OKBLUE+"Previous url successfully retrieved: "+prevUrl+bcolors.ENDC)
     itemToSignOut = StockItem.objects.get(pk=pk)
+    prevUrl = itemToSignOut.url
     if(request.method=='POST'):
         print(bcolors.OKGREEN+"Checking if item already signed out..."+bcolors.ENDC)
         signedOutStatus = itemToSignOut.signedOut
@@ -228,10 +225,8 @@ def signOut(request, pk):
 
 def signIn(request, pk):
     print(bcolors.OKGREEN+"Attempting to sign in item..."+bcolors.ENDC)
-    print(bcolors.OKGREEN+"Getting previous url..."+bcolors.ENDC)
-    prevUrl = request.POST.get('url')
-    print(bcolors.OKBLUE+"Previous url successfully retrieved: "+prevUrl+bcolors.ENDC)
     itemToSignIn = StockItem.objects.get(pk=pk)
+    prevUrl = itemToSignIn.url
     if(request.method=='POST'):
         print(bcolors.OKGREEN+"Checking if item already signed in..."+bcolors.ENDC)
         signedInStatus = itemToSignIn.signedIn
@@ -250,10 +245,8 @@ def signIn(request, pk):
 
 def onTrip(request, pk):
     print(bcolors.OKGREEN+"Attempting to trip sign out item..."+bcolors.ENDC)
-    print(bcolors.OKGREEN+"Getting previous url..."+bcolors.ENDC)
-    prevUrl = request.POST.get('url')
-    print(bcolors.OKBLUE+"Previous url successfully retrieved: "+prevUrl+bcolors.ENDC)
     itemToTrip = StockItem.objects.get(pk=pk)
+    prevUrl = itemToTrip.url
     if(request.method=='POST'):
         print(bcolors.OKGREEN+"Checking if item already signed in..."+bcolors.ENDC)
         tripStatus = itemToTrip.onTrip
@@ -269,5 +262,8 @@ def onTrip(request, pk):
             return redirect(prevUrl)
 
 def inventory(request):
-    print('Inventory page')
-    return render(request, 'App/inventory.html')
+    print(bcolors.OKBLUE+"Successfully loaded inventory page!"+bcolors.ENDC)
+    #This page displays a list of all stock items in a table like format
+    #User can click on an item and see it's detail page
+    stockItems = StockItem.objects.all()
+    return render(request, 'App/inventory.html', {'stockItems' : stockItems})
