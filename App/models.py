@@ -23,7 +23,6 @@ class StockItem(models.Model):
     stockType = models.CharField(max_length=15)
     brand = models.CharField(max_length=30)
     size = models.CharField(max_length=10)
-    number = models.PositiveBigIntegerField(default=0, validators=[MinValueValidator(1)], unique=True)
     onTrip = models.BooleanField(default=False)
     signedOut = models.BooleanField(default=False)
     signedIn = models.BooleanField(default=True)
@@ -37,5 +36,11 @@ class StockItem(models.Model):
 
 class Wetsuit(StockItem):
     gender = models.CharField(max_length=6)
+    wetsuitNumber = models.PositiveIntegerField(default=0, unique=True)
     def __str__(self):
-        return (self.stockType+'_'+self.brand+'_'+self.gender+'_'+self.size+'_'+str(self.number))
+        return (self.stockType+'_'+self.brand+'_'+self.gender+'_'+self.size+'_'+str(self.wetsuitNumber))
+
+class Surfboard(StockItem):
+    surfboardNumber = models.PositiveIntegerField(default=0, unique=True)
+    def __str__(self):
+        return (self.stockType+'_'+self.brand+'_'+self.gender+'_'+self.size+'_'+str(self.surfboardNumber))

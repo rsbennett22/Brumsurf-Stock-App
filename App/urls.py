@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('wetsuit/<str:brand>&<str:gender>&<str:size>&<int:number>', views.wetsuit, name='wetsuit'),
+    path('wetsuit/<str:brand>&<str:gender>&<str:size>&<int:wetsuitNumber>', views.wetsuit, name='wetsuit'),
     path('stockFormsPage/', views.stockForms, name='stockFormsPage'),
     path('wetsuitFormPage/', views.wetsuitForm, name='wetsuitFormPage'),
     path('addNewWetsuit/', views.addNewWetsuit, name='addNewWetsuit'),
@@ -12,4 +12,6 @@ urlpatterns = [
     path('signIn/<int:pk>', views.signIn, name='signIn'),
     path('onTrip/<int:pk>', views.onTrip, name='onTrip'),
     path('inventory/', views.inventory, name='inventory'),
+    path('surfboardFormPage/', views.surfboardForm, name='surfboardFormPage'),
+    path('addNewSurfboard/', views.addNewSurfboard, name='addNewSurfboard'),
 ]

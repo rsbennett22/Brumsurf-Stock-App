@@ -24,15 +24,25 @@ class bcolors:
 def index(request):
     return render(request, 'App/index.html',print(bcolors.OKBLUE+'Successfully loaded home page!'+bcolors.ENDC))
 
-def wetsuit(request, brand, gender, size, number):
+def stockForms(request):
+    print(bcolors.OKBLUE+"Successfully loaded stock form selection page!"+bcolors.ENDC)
+    return render(request, 'App/stockForms.html')
+
+def wetsuitForm(request):
+    return render(request, 'App/generateWetsuitForm.html', print(bcolors.OKBLUE+"Successfully loaded wetsuit form page!"+bcolors.ENDC))
+
+def surfboardForm(request):
+    return render(request, 'App/generateSurfboardForm.html', print(bcolors.OKBLUE+"Successfully loaded surfboard form page!"+bcolors.ENDC))
+
+def wetsuit(request, brand, gender, size, wetsuitNumber):
 
     #REMOVED QR CHECK HERE
 
-    qrPath = 'qrcodes\\'+brand+gender+str(size)+str(number)+'.png'
+    qrPath = 'qrcodes\\'+brand+gender+str(size)+str(wetsuitNumber)+'.png'
     #Get pk of this wetsuit
     print(bcolors.OKGREEN+"Trying to get wetsuit object..."+bcolors.ENDC)
     try:
-        thisWetsuit = Wetsuit.objects.get(brand=brand, gender=gender, size=size, number=number)
+        thisWetsuit = Wetsuit.objects.get(brand=brand, gender=gender, size=size, wetsuitNumber=wetsuitNumber)
         print(bcolors.OKBLUE+"Successfully retrieved wetsuit object!"+bcolors.ENDC)
     except:
         print(bcolors.FAIL+"Error! Wetsuit does not exist!"+bcolors.ENDC)
@@ -44,7 +54,7 @@ def wetsuit(request, brand, gender, size, number):
     onTrip=thisWetsuit.onTrip
     qrPath = 'qrCodes\\'+str(thisWetsuit.qrCode)
     print(bcolors.OKGREEN+"Loading info page"+bcolors.ENDC)
-    deleteUrl='../deleteItem/'+str(pk)
+    deleteUrl='../deleteItem/'+str(wetsuitNumber)
     signOutUrl='../signOut/'+str(pk)
     signInUrl='../signIn/'+str(pk)
     onTripUrl='../onTrip/'+str(pk)
@@ -53,7 +63,7 @@ def wetsuit(request, brand, gender, size, number):
         'brand' : brand, 
         'gender' : gender, 
         'size' : size, 
-        'number' : number, 
+        'wetsuitNumber' : wetsuitNumber, 
         'signedIn': signedIn,
         'signedOut': signedOut,
         'onTrip': onTrip,
@@ -64,13 +74,6 @@ def wetsuit(request, brand, gender, size, number):
         'signInUrl': signInUrl,
         'onTripUrl': onTripUrl,
         }, print(bcolors.OKBLUE+"Successfully loaded wetsuit info page!"+bcolors.ENDC))
-
-def stockForms(request):
-    print(bcolors.OKBLUE+"Successfully loaded stock form selection page!"+bcolors.ENDC)
-    return render(request, 'App/stockForms.html')
-
-def wetsuitForm(request):
-    return render(request, 'App/generateWetsuitForm.html', print(bcolors.OKBLUE+"Successfully loaded wetsuit form page!"+bcolors.ENDC))
 
 def addNewWetsuit(request):
     if(request.method=='POST'):
@@ -100,49 +103,48 @@ def addNewWetsuit(request):
                 return print(bcolors.FAIL+"Error, size is None!"+bcolors.ENDC)
             
             print(bcolors.OKGREEN+"Getting wetsuit number..."+bcolors.ENDC)
-            newWetsuit.number=request.POST.get('num')
-            if(newWetsuit.number!=None):
-                print(bcolors.OKBLUE+"Successfully obtained wetsuit number: "+bcolors.ENDC+newWetsuit.number)
+            newWetsuit.wetsuitNumber=request.POST.get('num')
+            if(newWetsuit.wetsuitNumber!=None):
+                print(bcolors.OKBLUE+"Successfully obtained wetsuit number: "+bcolors.ENDC+newWetsuit.wetsuitNumber)
             else:
                 return print(bcolors.FAIL+"Error, number is None!"+bcolors.ENDC)
             
-
             #Implement feature that checks if wetsuit number already exists, if does, loop to find the next possible number
             print(bcolors.OKGREEN+"Checking if wetsuit number is unique..."+bcolors.ENDC)
             try:
-                numWetsuit = Wetsuit.objects.get(number=newWetsuit.number)
+                numWetsuit = Wetsuit.objects.get(number=newWetsuit.wetsuitNumber)
                 print(bcolors.WARNING+"A wetsuit with that number exists!"+bcolors.ENDC)
                 #Get the next available wetsuit number
-                newWetsuit.number = getNextWetsuitNum(1)
+                newWetsuit.wetsuitNumber = getNextWetsuitNum(1)
             except:
                 print(bcolors.OKBLUE+"Wetsuit number is ok!"+bcolors.ENDC)
-            fileName=newWetsuit.brand+newWetsuit.gender+str(newWetsuit.size)+str(newWetsuit.number)+'.png'
+            fileName=newWetsuit.brand+newWetsuit.gender+str(newWetsuit.size)+str(newWetsuit.wetsuitNumber)+'.png'
             print(bcolors.OKGREEN+"Checking if QR code matching "+fileName+" exists..."+bcolors.ENDC)
             #Check if QR code matching info exists
             if(checkForQR(fileName)):
                 #Load wetsuit page wetsuit item's info
                 print(bcolors.OKGREEN+"Loading wetsuit info page..."+bcolors.ENDC)
-                return wetsuit(request, newWetsuit.brand, newWetsuit.gender, newWetsuit.size, newWetsuit.number)
+                return wetsuit(request, newWetsuit.brand, newWetsuit.gender, newWetsuit.size, newWetsuit.wetsuitNumber)
             #Create QR code from data
             else:
-                generateWetsuitQR(newWetsuit.brand, newWetsuit.gender, newWetsuit.size, newWetsuit.number, fileName)
+                generateWetsuitQR(newWetsuit.brand, newWetsuit.gender, newWetsuit.size, newWetsuit.wetsuitNumber, fileName)
                 #Add qr code to model instance
                 newWetsuit.qrCode=fileName
                 #Add url to model instance
-                newWetsuit.url='http://'+IP+':8000/wetsuit/'+newWetsuit.brand+'&'+newWetsuit.gender+'&'+str(newWetsuit.size)+'&'+str(newWetsuit.number)
+                newWetsuit.url='http://'+IP+':8000/wetsuit/'+newWetsuit.brand+'&'+newWetsuit.gender+'&'+str(newWetsuit.size)+'&'+str(newWetsuit.wetsuitNumber)
                 print(bcolors.OKGREEN+"Adding new wetsuit to database..."+bcolors.ENDC)
                 newWetsuit.save()
                 print(bcolors.OKBLUE+"Successfully added new wetsuit to database!"+bcolors.ENDC)
                 #Redirect to wetsuit info page
                 print(bcolors.OKGREEN+"Loading wetsuit info page..."+bcolors.ENDC)
-                return wetsuit(request, newWetsuit.brand, newWetsuit.gender, newWetsuit.size, newWetsuit.number)
+                return wetsuit(request, newWetsuit.brand, newWetsuit.gender, newWetsuit.size, newWetsuit.wetsuitNumber)
         else:
             return HttpResponse('Bad request...')
 
-def generateWetsuitQR(brand, gender, size, number, fileName):
+def generateWetsuitQR(brand, gender, size, wetsuitNumber, fileName):
     print(bcolors.OKGREEN+"Generating a new wetsuit QR code..."+bcolors.ENDC)
     #Generate qrcode from data
-    qrData = 'http://'+IP+':8000/wetsuit/'+brand+'&'+gender+'&'+str(size)+'&'+str(number)
+    qrData = 'http://'+IP+':8000/wetsuit/'+brand+'&'+gender+'&'+str(size)+'&'+str(wetsuitNumber)
     qr = qrcode.make(qrData)
     print(bcolors.OKGREEN+"Saving generated QR code..."+bcolors.ENDC)
     path = 'static\\qrcodes\\'+fileName
@@ -151,6 +153,9 @@ def generateWetsuitQR(brand, gender, size, number, fileName):
         return print(bcolors.OKBLUE+"Successfully generated and saved QR code!"+bcolors.ENDC)
     else:
         return print(bcolors.FAIL+"QR code failed to save!"+bcolors.ENDC)
+
+def addNewSurfboard(request):
+    return HttpResponse('add new surfboard')
 
 def checkForQR(fileName):
     path = 'static\\qrcodes\\'+fileName
@@ -181,18 +186,16 @@ def deleteItem(request, pk):
         stockType = itemToDelete.stockType
         brand = itemToDelete.brand
         size = itemToDelete.size
-        number = itemToDelete.number
-        print(bcolors.OKBLUE+"Obtained item info: "+stockType, brand, str(size), str(number)+bcolors.ENDC)
         if(stockType=='wetsuit'):
             print(bcolors.WARNING+'Deleting QR code...'+bcolors.ENDC)
             gender = Wetsuit.objects.get(pk=pk).gender
+            wetsuitNumber = Wetsuit.objects.get(pk=pk).wetsuitNumber
+            print(bcolors.OKBLUE+"Obtained item info: "+stockType, brand, gender, str(size), str(wetsuitNumber)+bcolors.ENDC)
             #Delete associated QR code
-            fileName=brand+gender+str(size)+str(number)+'.png'
+            fileName=brand+gender+str(size)+str(wetsuitNumber)+'.png'
             deleteQRCode(fileName)
         else:
-            print(bcolors.WARNING+'Deleting QR code...'+bcolors.ENDC)
-            fileName=brand+str(size)+str(number)+'.png'
-            deleteQRCode(fileName)
+            print(bcolors.FAIL+'Invalid stocktype!'+bcolors.ENDC)
 
         #Delete item from db
         print(bcolors.WARNING+"Deleting item from database..."+bcolors.ENDC)
