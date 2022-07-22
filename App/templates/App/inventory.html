@@ -12,7 +12,7 @@
     <button onclick="location.href='/'">Home</button>
     <br><br>
     {% for stock in stockItems %}
-    {{ stock.stockType }} {{ stock.brand }}
+    <a href='{{ stock.url }}'>{{ stock.stockType }} {{ stock.brand }}</a>
     {% endfor %}
 </body>
 </html>
