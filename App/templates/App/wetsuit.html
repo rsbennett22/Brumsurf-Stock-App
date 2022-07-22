@@ -7,30 +7,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brumsurf Stock App</title>
 </head>
-<body onload="loadWetsuitInfoPage()">
+<body onload="setDefaultsAndReload()">
     <button onclick="location.href='/'">Home</button>
-    <h2>The stock type is : {{stockType}}</h2>
-    <h2 id="brand" brand="{{brand}}">The brand is : {{brand}}</h2>
-    <h2 id="gender" gender="{{gender}}">The gender is : {{gender}}</h2>
-    <h2 id="size" size="{{size}}">The size is : {{size}}</h2>
-    <h2 id="number" number="{{number}}">The number is : {{number}}</h2>
-    <h2>PK: {{pk}}</h2>
-    <img src="{% static qrPath %}">
+    <h1>{{stockType}}</h1>
+    <h2 id="brand" brand="{{brand}}">Brand: {{brand}}</h2>
+    <h2 id="gender" gender="{{gender}}">Gender: {{gender}}</h2>
+    <h2 id="size" size="{{size}}">Size: {{size}}</h2>
+    <h2 id="number" number="{{number}}">Wetsuit number: {{number}}</h2>
+    <h2 id="status"></h2>
+    <img src="{% static qrPath %}" alt="Item url">
     <br>
-
-    <form id="deleteItem" onsubmit="return confirm('Are you sure?')" action="{% url 'deleteItem' %}" method="POST">
+    <form onsubmit="return confirm('Sign out wetsuit {{number}}?')" action="{{signOutUrl}}" method="POST">
         {% csrf_token %}
-        <input name="stockType" value={{stockType}} hidden>
-        <input name="brand" value={{brand}} hidden>
-        <input name="gender" value={{gender}} hidden>
-        <input name="size" value={{size}} hidden>
-        <input name="number" value={{number}} hidden>
-        <input name="pk" value={{pk}} hidden>
+        <input id="signOutUrl" name="url" value="" hidden>
+        <button id="signOut" onclick="setCurrentUrl('signOutUrl')" type="submit">Sign Out</button>
+    </form>
+    <form onsubmit="return confirm('Sign in wetsuit {{number}}?')" action="{{signInUrl}}" method="POST">
+        {% csrf_token %}
+        <input id="signInUrl" name="url" value="" hidden>
+        <button id="signIn" onclick="setCurrentUrl('signInUrl')" type="submit">Sign In</button>
+    </form>
+    <form onsubmit="return confirm('Trip sign out wetsuit {{number}}?')" action="{{onTripUrl}}" method="POST">
+        {% csrf_token %}
+        <input id="onTripUrl" name="url" value="" hidden>
+        <button id="onTrip" onclick="setCurrentUrl('onTripUrl')" type="submit">Trip Sign Out</button>
+    </form>
+    <form id="deleteItem" onsubmit="return confirm('Are you sure you want to delete this wetsuit?')" action="{{deleteUrl}}" method="POST">
+        {% csrf_token %}
         <button type="submit">Delete</button>
     </form>
-
     <script>
-        function loadWetsuitInfoPage() {
+        function setCurrentUrl(id){
+            console.log(id)
+            document.getElementById(id).value=location.href
+        }
+
+        function setDefaultsAndReload() {
+
+            //Get status of item, signedIn, signedOut and onTrip and disable/enable buttons accordingly
+            var signedIn = "{{signedIn}}";
+            var signedOut = "{{signedOut}}";
+            var onTrip = "{{onTrip}}";
+            
+            //Set relevant buttons based on values of above vars
+            if(signedIn=='True') {
+                //Get sign in button and disable it
+                document.getElementById('signIn').disabled = true;
+            }
+            else if(onTrip=='True' || signedOut=='True') {
+                document.getElementById('onTrip').disabled = true;
+                document.getElementById('signOut').disabled = true;
+            }
+
             if(window.location.href == 'http://192.168.0.58:8000/addNewWetsuit/')
             {
                 brand = document.getElementById('brand').getAttribute('brand');

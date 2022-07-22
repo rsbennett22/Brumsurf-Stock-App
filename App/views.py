@@ -6,6 +6,11 @@ import qrcode
 from os.path import exists
 from os import remove
 from .models import StockItem, Wetsuit
+import socket
+
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("8.8.8.8", 80))
+IP = s.getsockname()[0]
 
 class bcolors:
     HEADER = '\033[95m'
@@ -30,10 +35,33 @@ def wetsuit(request, brand, gender, size, number):
     print(bcolors.OKGREEN+"Getting pk of this wetsuit object..."+bcolors.ENDC)
     thisWetsuit = Wetsuit.objects.get(brand=brand, gender=gender, size=size, number=number)
     pk = thisWetsuit.pk
+    signedOut=thisWetsuit.signedOut
+    signedIn=thisWetsuit.signedIn
+    onTrip=thisWetsuit.onTrip
+    qrPath = 'qrCodes\\'+str(thisWetsuit.qrCode)
     if(pk!=None):
         print(bcolors.OKBLUE+"PK succesfully obtained!"+bcolors.ENDC)
         print(bcolors.OKGREEN+"Loading info page"+bcolors.ENDC)
-        return render(request, 'App/wetsuit.html', {'stockType' : 'wetsuit', 'brand' : brand, 'gender' : gender, 'size' : size, 'number' : number, 'qrPath' : qrPath, 'pk' : pk}, print(bcolors.OKBLUE+"Successfully loaded wetsuit info page!"+bcolors.ENDC))
+        deleteUrl='../deleteItem/'+str(pk)
+        signOutUrl='../signOut/'+str(pk)
+        signInUrl='../signIn/'+str(pk)
+        onTripUrl='../onTrip/'+str(pk)
+        return render(request, 'App/wetsuit.html', {
+            'stockType' : 'wetsuit', 
+            'brand' : brand, 
+            'gender' : gender, 
+            'size' : size, 
+            'number' : number, 
+            'signedIn': signedIn,
+            'signedOut': signedOut,
+            'onTrip': onTrip,
+            'qrPath' : qrPath, 
+            'pk' : pk, 
+            'deleteUrl' : deleteUrl, 
+            'signOutUrl': signOutUrl,
+            'signInUrl': signInUrl,
+            'onTripUrl': onTripUrl,
+            }, print(bcolors.OKBLUE+"Successfully loaded wetsuit info page!"+bcolors.ENDC))
     else:
         print(bcolors.FAIL+"Error, PK is None!")
         return render(request, 'App/pkErrorPage.html', print(bcolors.WARNING+'Successfully loaded pk error page'+bcolors.ENDC))
@@ -103,7 +131,7 @@ def addNewWetsuit(request):
 def generateWetsuitQR(brand, gender, size, number, fileName):
     print(bcolors.OKGREEN+"Generating a new wetsuit QR code..."+bcolors.ENDC)
     #Generate qrcode from data
-    qrData = 'http://192.168.0.58:8000/wetsuit/'+brand+'&'+gender+'&'+str(size)+'&'+str(number)
+    qrData = 'http://'+IP+':8000/wetsuit/'+brand+'&'+gender+'&'+str(size)+'&'+str(number)
     qr = qrcode.make(qrData)
     print(bcolors.OKGREEN+"Saving generated QR code..."+bcolors.ENDC)
     path = 'static\\qrcodes\\'+fileName
@@ -135,23 +163,24 @@ def deleteQRCode(fileName):
     else:
         return print(bcolors.FAIL+"Error! File does not exist!"+bcolors.ENDC)
 
-def deleteItem(request):
-    pk = request.POST.get('pk')
-    itemToDelete = StockItem(pk=pk)
+def deleteItem(request, pk):
+    itemToDelete = StockItem.objects.get(pk=pk)
     if(request.method=='POST'):
-        stockType = request.POST.get('stockType')
-        brand = request.POST.get('brand')
-        size = request.POST.get('size')
-        number = request.POST.get('number')
+        print(bcolors.OKGREEN+"Getting item info..."+bcolors.ENDC)
+        stockType = itemToDelete.stockType
+        brand = itemToDelete.brand
+        size = itemToDelete.size
+        number = itemToDelete.number
+        print(bcolors.OKBLUE+"Obtained item info: "+stockType, brand, str(size), str(number)+bcolors.ENDC)
         if(stockType=='wetsuit'):
             print(bcolors.WARNING+'Deleting QR code...'+bcolors.ENDC)
-            gender = request.POST.get('gender')
+            gender = Wetsuit.objects.get(pk=pk).gender
             #Delete associated QR code
-            fileName=brand+gender+size+number+'.png'
+            fileName=brand+gender+str(size)+str(number)+'.png'
             deleteQRCode(fileName)
         else:
             print(bcolors.WARNING+'Deleting QR code...'+bcolors.ENDC)
-            fileName=brand+size+number+'.png'
+            fileName=brand+str(size)+str(number)+'.png'
             deleteQRCode(fileName)
 
         #Delete item from db
@@ -159,3 +188,63 @@ def deleteItem(request):
         itemToDelete.delete()
         print(bcolors.OKBLUE+"Successfully deleted item from database!"+bcolors.ENDC)
         return redirect('/')
+
+def signOut(request, pk):
+    print(bcolors.OKGREEN+"Attempting to sign out item..."+bcolors.ENDC)
+    print(bcolors.OKGREEN+"Getting previous url..."+bcolors.ENDC)
+    prevUrl = request.POST.get('url')
+    print(bcolors.OKBLUE+"Previous url successfully retrieved: "+prevUrl+bcolors.ENDC)
+    itemToSignOut = StockItem.objects.get(pk=pk)
+    if(request.method=='POST'):
+        print(bcolors.OKGREEN+"Checking if item already signed out..."+bcolors.ENDC)
+        signedOutStatus = itemToSignOut.signedOut
+        if(signedOutStatus):
+            print(bcolors.FAIL+"Item already signed out!"+bcolors.ENDC)
+            return redirect(prevUrl)
+        else:
+            itemToSignOut.signedOut=True
+            itemToSignOut.signedIn=False
+            itemToSignOut.onTrip=False
+            itemToSignOut.save()
+            print(bcolors.OKBLUE+"Item successfully signed out!"+bcolors.ENDC)
+            return redirect(prevUrl)
+
+def signIn(request, pk):
+    print(bcolors.OKGREEN+"Attempting to sign in item..."+bcolors.ENDC)
+    print(bcolors.OKGREEN+"Getting previous url..."+bcolors.ENDC)
+    prevUrl = request.POST.get('url')
+    print(bcolors.OKBLUE+"Previous url successfully retrieved: "+prevUrl+bcolors.ENDC)
+    itemToSignIn = StockItem.objects.get(pk=pk)
+    if(request.method=='POST'):
+        print(bcolors.OKGREEN+"Checking if item already signed in..."+bcolors.ENDC)
+        signedInStatus = itemToSignIn.signedIn
+        if(signedInStatus):
+            print(bcolors.FAIL+"Item already signed in!"+bcolors.ENDC)
+            return redirect(prevUrl)
+        else:
+            itemToSignIn.signedOut=False
+            itemToSignIn.onTrip=False
+            itemToSignIn.signedIn=True
+            itemToSignIn.save()
+            print(bcolors.OKBLUE+"Item successfully signed in!"+bcolors.ENDC)
+            return redirect(prevUrl)
+
+def onTrip(request, pk):
+    print(bcolors.OKGREEN+"Attempting to trip sign out item..."+bcolors.ENDC)
+    print(bcolors.OKGREEN+"Getting previous url..."+bcolors.ENDC)
+    prevUrl = request.POST.get('url')
+    print(bcolors.OKBLUE+"Previous url successfully retrieved: "+prevUrl+bcolors.ENDC)
+    itemToTrip = StockItem.objects.get(pk=pk)
+    if(request.method=='POST'):
+        print(bcolors.OKGREEN+"Checking if item already signed in..."+bcolors.ENDC)
+        tripStatus = itemToTrip.onTrip
+        if(tripStatus):
+            print(bcolors.FAIL+"Item already signed in!"+bcolors.ENDC)
+            return redirect(prevUrl)
+        else:
+            itemToTrip.signedOut=False
+            itemToTrip.onTrip=True
+            itemToTrip.signedIn=False
+            itemToTrip.save()
+            print(bcolors.OKBLUE+"Item successfully signed out on trip!"+bcolors.ENDC)
+            return redirect(prevUrl)
