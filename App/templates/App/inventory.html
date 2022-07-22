@@ -26,8 +26,25 @@
             <td>{{ wetty.brand }}</a></td>
             <td>{{ wetty.gender }}</a></td>
             <td>{{ wetty.size }}</a></td>
-            <td>{{ wetty.number }}</td>
+            <td>{{ wetty.wetsuitNumber }}</td>
             <td><a href='{{ wetty.url }}'>{{ wetty.url }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Surfboards</h2>
+    <table>
+        <tr>
+            <th>Brand</th>
+            <th>Size</th>
+            <th>Number</th>
+            <th>Url</th>
+        </tr>
+        {% for surf in surfboards %}
+        <tr>
+            <td>{{ surf.brand }}</a></td>
+            <td>{{ surf.size }}</a></td>
+            <td>{{ surf.surfboardNumber }}</td>
+            <td><a href='{{ surf.url }}'>{{ surf.url }}</a></td>
         </tr>
         {% endfor %}
     </table>

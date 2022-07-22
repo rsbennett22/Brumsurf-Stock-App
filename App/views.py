@@ -3,7 +3,7 @@ from django.http import HttpResponse
 import qrcode
 from os.path import exists
 from os import remove
-from .models import StockItem, Wetsuit
+from .models import StockItem, Wetsuit, Surfboard
 import socket
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -32,7 +32,8 @@ def wetsuitForm(request):
     return render(request, 'App/generateWetsuitForm.html', print(bcolors.OKBLUE+"Successfully loaded wetsuit form page!"+bcolors.ENDC))
 
 def surfboardForm(request):
-    return render(request, 'App/generateSurfboardForm.html', print(bcolors.OKBLUE+"Successfully loaded surfboard form page!"+bcolors.ENDC))
+    stockType='Surfboard'
+    return render(request, 'App/generateItemForm.html', {'stockType': stockType},print(bcolors.OKBLUE+"Successfully loaded surfboard form page!"+bcolors.ENDC))
 
 def wetsuit(request, brand, gender, size, wetsuitNumber):
 
@@ -75,6 +76,40 @@ def wetsuit(request, brand, gender, size, wetsuitNumber):
         'onTripUrl': onTripUrl,
         }, print(bcolors.OKBLUE+"Successfully loaded wetsuit info page!"+bcolors.ENDC))
 
+def itemDetail(request, stockType, number):
+    if(stockType=='surfboard'):
+        #Get surfboard
+        thisBoard = Surfboard.objects.get(surfboardNumber=number)
+        #Send relevant info to html page
+        brand = thisBoard.brand
+        size = thisBoard.size
+        onTrip = thisBoard.onTrip
+        signedOut = thisBoard.signedOut
+        signedIn = thisBoard.signedIn
+        qrCode = thisBoard.qrCode
+        pk = thisBoard.pk
+        deleteUrl = '../deleteItem/'+str(pk)
+        signOutUrl='../signOut/'+str(pk)
+        signInUrl='../signIn/'+str(pk)
+        onTripUrl='../onTrip/'+str(pk)
+        #Load detail page
+        return render(request, 'App/itemDetail.html', {
+            'stockType': stockType,
+            'brand': brand,
+            'size': size,
+            'number': number,
+            'onTrip': onTrip,
+            'signedOut': signedOut,
+            'signedIn': signedIn,
+            'qrCode': 'qrCodes\\'+str(qrCode),
+            'pk': pk,
+            'deleteUrl': deleteUrl,
+            'signOutUrl': signOutUrl,
+            'signInUrl': signInUrl,
+            'onTripUrl': onTripUrl,
+        }, print('Loaded item detail page!'))
+
+
 def addNewWetsuit(request):
     if(request.method=='POST'):
         if(request.POST.get('brand')):
@@ -115,7 +150,7 @@ def addNewWetsuit(request):
                 numWetsuit = Wetsuit.objects.get(number=newWetsuit.wetsuitNumber)
                 print(bcolors.WARNING+"A wetsuit with that number exists!"+bcolors.ENDC)
                 #Get the next available wetsuit number
-                newWetsuit.wetsuitNumber = getNextWetsuitNum(1)
+                newWetsuit.wetsuitNumber = getNextNum(1, 'wetsuit')
             except:
                 print(bcolors.OKBLUE+"Wetsuit number is ok!"+bcolors.ENDC)
             fileName=newWetsuit.brand+newWetsuit.gender+str(newWetsuit.size)+str(newWetsuit.wetsuitNumber)+'.png'
@@ -154,8 +189,61 @@ def generateWetsuitQR(brand, gender, size, wetsuitNumber, fileName):
     else:
         return print(bcolors.FAIL+"QR code failed to save!"+bcolors.ENDC)
 
-def addNewSurfboard(request):
+def addNewItem(request):
+    if(request.method=='POST'):
+        #Check item type
+        if(request.POST.get('itemType')=='Surfboard'):
+            print(bcolors.OKGREEN+'Attempting to add new surfboard to db...'+bcolors.ENDC)
+            #Get all info from request
+            stockType = 'surfboard'
+            brand = request.POST.get('brand')
+            size = request.POST.get('size')
+            number = request.POST.get('num')
+            print(bcolors.OKBLUE+"Retrieved item info: "+brand, str(size), str(number)+bcolors.ENDC)
+            #Check if surfboard with same item num exists
+            try:
+                #If surfboard found with Id, get next available
+                numSurfboard = Surfboard.objects.get(surfboardNumber=number)
+                number = getNextNum(1, 'surfboard')
+            except:
+                #If not found, continue
+                print(bcolors.OKBLUE+"Surfboard number is ok!"+bcolors.ENDC)
+
+            #Create a filename for the qr code using data from request
+            fileName=stockType+brand+str(size)+str(number)+'.png'
+            #Check if qr code matchng filename exists
+            if(checkForQR(fileName)):
+                #Load surfboard info page
+                return itemDetail(request, stockType, number)
+            else:
+                #Generate QR code for item
+                generateQRCode(stockType, brand, size, number, fileName)
+                #Create a new surfboard object and add it to db
+                newSurfboard = Surfboard()
+                newSurfboard.stockType=stockType
+                newSurfboard.brand=brand
+                newSurfboard.size=size
+                newSurfboard.surfboardNumber=number
+                newSurfboard.qrCode=fileName
+                newSurfboard.url='http://'+IP+':8000/detail/'+stockType+'&'+str(number)
+                newSurfboard.save()
+                return itemDetail(request, stockType, number)
+
     return HttpResponse('add new surfboard')
+
+def generateQRCode(stockType, brand, size, number, fileName):
+    if(stockType=='surfboard'):
+        print(bcolors.OKGREEN+"Generating a new surfboard QR code..."+bcolors.ENDC)
+        #Generate qrcode from data
+        qrData = 'http://'+IP+':8000/surfboard/'+brand+'&'+str(size)+'&'+str(number)
+        qr = qrcode.make(qrData)
+        print(bcolors.OKGREEN+"Saving generated QR code..."+bcolors.ENDC)
+        path = 'static\\qrcodes\\'+fileName
+        qr.save(path)
+        if(exists(path)):
+            return print(bcolors.OKBLUE+"Successfully generated and saved QR code!"+bcolors.ENDC)
+        else:
+            return print(bcolors.FAIL+"QR code failed to save!"+bcolors.ENDC)
 
 def checkForQR(fileName):
     path = 'static\\qrcodes\\'+fileName
@@ -278,16 +366,27 @@ def inventory(request):
     print(bcolors.OKBLUE+"Successfully loaded inventory page!"+bcolors.ENDC)
     #This page displays a list of all stock items in a table like format
     #User can click on an item and see it's detail page
-    wetsuits = Wetsuit.objects.all().order_by('number')
+    wetsuits = Wetsuit.objects.all().order_by('wetsuitNumber')
+    surfboards = Surfboard.objects.all().order_by('surfboardNumber')
     #surfboards = StockItem.objects.get(stockType='surfboard')
-    return render(request, 'App/inventory.html', {'wetsuits' : wetsuits})
+    return render(request, 'App/inventory.html', {'wetsuits' : wetsuits, 'surfboards': surfboards})
 
-def getNextWetsuitNum(number):
-    try:
-        #If no exception, recursive call number+1
-        availableNum = Wetsuit.objects.get(number=number)
-        num = number + 1
-        return getNextWetsuitNum(num)
-    except:
-        print(bcolors.FAIL+"NUMBER: "+str(number)+bcolors.ENDC)
-        return number
+def getNextNum(number, stockType):
+    if(stockType=='wetsuit'):
+        try:
+            #If no exception, recursive call number+1
+            availableNum = Wetsuit.objects.get(wetsuitNumber=number)
+            num = number + 1
+            return getNextNum(num, 'wetsuit')
+        except:
+            print(bcolors.FAIL+"NUMBER: "+str(number)+bcolors.ENDC)
+            return number
+    elif(stockType=='surfboard'):
+        try:
+            #If no exception, recursive call number+1
+            availableNum = Surfboard.objects.get(surfboardNumber=number)
+            num = number + 1
+            return getNextNum(num, 'surfboard')
+        except:
+            print(bcolors.OKBLUE+"New number: "+str(number)+bcolors.ENDC)
+            return number

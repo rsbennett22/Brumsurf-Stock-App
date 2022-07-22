@@ -13,5 +13,6 @@ urlpatterns = [
     path('onTrip/<int:pk>', views.onTrip, name='onTrip'),
     path('inventory/', views.inventory, name='inventory'),
     path('surfboardFormPage/', views.surfboardForm, name='surfboardFormPage'),
-    path('addNewSurfboard/', views.addNewSurfboard, name='addNewSurfboard'),
+    path('addNewSurfboard/', views.addNewItem, name='addNewSurfboard'),
+    path('detail/<str:stockType>&<int:number>', views.itemDetail, name='wetsuit'),
 ]

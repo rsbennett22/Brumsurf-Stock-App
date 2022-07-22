@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brumsurf Stock App</title>
+</head>
+<body onload="setDefaultsAndReload()">
+    <button onclick="location.href='/'">Home</button>
+    <h1>{{stockType}}</h1>
+    <h2 id="brand" brand="{{brand}}">Brand: {{brand}}</h2>
+    <h2 id="size" size="{{size}}">Size: {{size}}</h2>
+    <h2 id="number" number="{{number}}">{{stockType}} number: {{number}}</h2>
+    <h2 id="status"></h2>
+    <img src="{% static qrCode %}" alt="Item url">
+    <br>
+    <form onsubmit="return confirm('Sign in {{stockType}} {{number}}?')" action="{{signInUrl}}" method="POST">
+        {% csrf_token %}
+        <input id="signInUrl" name="url" value="" hidden>
+        <button id="signIn" onclick="setCurrentUrl('signInUrl')" type="submit">Sign In</button>
+    </form>
+    <form onsubmit="return confirm('Sign out {{stockType}} {{number}}?')" action="{{signOutUrl}}" method="POST">
+        {% csrf_token %}
+        Student Sign Out: <input type="checkbox" onchange="showHideSignOutOptions(this)">
+        <label for="studentName" id="nameLabel" style="display: none;">Name: </label>
+        <input type="text" id="studentName" name="studentName" maxlength="50" style="display: none;">
+        <label for="studentId" id="idLabel" style="display: none;">Student ID: </label>
+        <input type="text" id="studentId" name="studentId" minlength="7" maxlength="7" style="display: none;">
+        <br>
+        <input id="signOutUrl" name="url" value="" hidden>
+        <button id="signOut" onclick="setCurrentUrl('signOutUrl')" type="submit">Sign Out</button>
+    </form>
+    <form onsubmit="return confirm('Trip sign out {{stockType}} {{number}}?')" action="{{onTripUrl}}" method="POST">
+        {% csrf_token %}
+        <input id="onTripUrl" name="url" value="" hidden>
+        <button id="onTrip" onclick="setCurrentUrl('onTripUrl')" type="submit">Trip Sign Out</button>
+    </form>
+    <form id="deleteItem" onsubmit="return confirm('Are you sure you want to delete this {{stockType}}?')" action="{{deleteUrl}}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Delete</button>
+    </form>
+    <script>
+        function setCurrentUrl(id){
+            console.log(id)
+            document.getElementById(id).value=location.href
+        }
+
+        function setDefaultsAndReload() {
+
+            //Get status of item, signedIn, signedOut and onTrip and disable/enable buttons accordingly
+            var signedIn = "{{signedIn}}";
+            var signedOut = "{{signedOut}}";
+            var onTrip = "{{onTrip}}";
+            
+            //Set relevant buttons based on values of above vars
+            if(signedIn=='True') {
+                //Get sign in button and disable it
+                document.getElementById('signIn').disabled = true;
+            }
+            else if(onTrip=='True' || signedOut=='True') {
+                document.getElementById('onTrip').disabled = true;
+                document.getElementById('signOut').disabled = true;
+            }
+            if(window.location.href == 'http://192.168.0.58:8000/addNewSurfboard/') {
+                url = 'http://192.168.0.58:8000/detail/surfboard&'+"{{number}}"
+                window.location.replace(url)
+            }
+        }
+        function showHideSignOutOptions(element) {
+            nameField = document.getElementById('studentName');
+            nameLabel = document.getElementById('nameLabel');
+            idField = document.getElementById('studentId');
+            idLabel = document.getElementById('idLabel')
+            if(element.checked) {
+                //Show input fields for name and id
+                nameField.style.display = 'block';
+                nameLabel.style.display = 'block';
+                idField.style.display = 'block';
+                idLabel.style.display = 'block';
+            }
+            else {
+                //Hide elements
+                nameField.style.display = 'none';
+                nameLabel.style.display = 'none';
+                idField.style.display = 'none';
+                idLabel.style.display = 'none';
+                //Clear fields
+                nameField.value=''
+                idField.value=''
+            }
+        }
+    </script>
+</body>
+</html>

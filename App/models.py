@@ -30,6 +30,7 @@ class StockItem(models.Model):
     studentId = models.CharField(default='0000000', max_length=7, validators=[MinLengthValidator(7)])
     qrCode = models.ImageField()
     url = models.URLField(default=None)
+    number=0
 
     def __str__(self):
         return (self.stockType+'_'+self.brand+'_'+self.size+'_'+str(self.number))
@@ -43,4 +44,4 @@ class Wetsuit(StockItem):
 class Surfboard(StockItem):
     surfboardNumber = models.PositiveIntegerField(default=0, unique=True)
     def __str__(self):
-        return (self.stockType+'_'+self.brand+'_'+self.gender+'_'+self.size+'_'+str(self.surfboardNumber))
+        return (self.stockType+'_'+self.brand+'_'+self.size+'_'+str(self.surfboardNumber))

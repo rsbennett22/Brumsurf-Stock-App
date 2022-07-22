@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brumsurf Stock App</title>
+</head>
+<body onload="setOptions()">
+    <h1>{{stockType}} Form</h1>
+    <button onclick="location.href='/'">Home</button>
+    <br>
+    <br>
+    <form id="surfboardForm" action="{% url 'addNewSurfboard' %}" method="POST">
+        {% csrf_token %}
+        <input id="itemType" name="itemType" value="{{stockType}}" readonly hidden>
+        Brand: <select id="brand" name="brand" required>
+        </select>
+        <br>
+        Size: <select id="size" name="size" required>
+        </select>
+        <br>
+        Number: <input type="number" id="num" name="num" min="1" required>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        function setOptions() {
+            //Set values for options depending on stockType variable
+            //Get elements to add options to
+            var brandOptions = document.getElementById('brand');
+            var sizeOptions = document.getElementById('size');
+            //Check the value of stockType and set options accordingly
+            if("{{stockType}}".toLowerCase()=='surfboard') {
+                console.log('Surfboard form page loaded');
+                //Add options to brand
+                createOption(brandOptions, 'hotsurf');
+                createOption(brandOptions, 'bic');
+                createOption(brandOptions, 'surfworx');
+                //...//
+                //Add options to size
+                createOption(sizeOptions, "6'0");
+                createOption(sizeOptions, "7'0");
+                createOption(sizeOptions, "8'0");
+            }
+        }
+        function createOption(parent, value) {
+            var newOption = document.createElement('option');
+            newOption.value = value;
+            newOption.innerHTML = value;
+            parent.appendChild(newOption);
+        }
+    </script>
+
+</body>
+</html>
