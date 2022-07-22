@@ -5,14 +5,31 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
     <title>Brumsurf Stock App</title>
 </head>
 <body>
     <h1>Inventory</h1>
     <button onclick="location.href='/'">Home</button>
     <br><br>
-    {% for stock in stockItems %}
-    <a href='{{ stock.url }}'>{{ stock.stockType }} {{ stock.brand }}</a>
-    {% endfor %}
+    <h2>Wetsuits</h2>
+    <table>
+        <tr>
+            <th>Brand</th>
+            <th>Gender</th>
+            <th>Size</th>
+            <th>Number</th>
+            <th>Url</th>
+        </tr>
+        {% for wetty in wetsuits %}
+        <tr>
+            <td>{{ wetty.brand }}</a></td>
+            <td>{{ wetty.gender }}</a></td>
+            <td>{{ wetty.size }}</a></td>
+            <td>{{ wetty.number }}</td>
+            <td><a href='{{ wetty.url }}'>{{ wetty.url }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>

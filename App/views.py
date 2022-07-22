@@ -265,5 +265,6 @@ def inventory(request):
     print(bcolors.OKBLUE+"Successfully loaded inventory page!"+bcolors.ENDC)
     #This page displays a list of all stock items in a table like format
     #User can click on an item and see it's detail page
-    stockItems = StockItem.objects.all()
-    return render(request, 'App/inventory.html', {'stockItems' : stockItems})
+    wetsuits = Wetsuit.objects.all().order_by('number')
+    #surfboards = StockItem.objects.get(stockType='surfboard')
+    return render(request, 'App/inventory.html', {'wetsuits' : wetsuits})
