@@ -1,5 +1,6 @@
 from base64 import b32hexdecode
 from email.quoprimime import body_check
+import re
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 import qrcode
@@ -24,7 +25,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 def index(request):
-    return render(request, 'App/Index.html',print(bcolors.OKBLUE+'Successfully loaded home page!'+bcolors.ENDC))
+    return render(request, 'App/index.html',print(bcolors.OKBLUE+'Successfully loaded home page!'+bcolors.ENDC))
 
 def wetsuit(request, brand, gender, size, number):
 
@@ -32,39 +33,40 @@ def wetsuit(request, brand, gender, size, number):
 
     qrPath = 'qrcodes\\'+brand+gender+str(size)+str(number)+'.png'
     #Get pk of this wetsuit
-    print(bcolors.OKGREEN+"Getting pk of this wetsuit object..."+bcolors.ENDC)
-    thisWetsuit = Wetsuit.objects.get(brand=brand, gender=gender, size=size, number=number)
+    print(bcolors.OKGREEN+"Trying to get wetsuit object..."+bcolors.ENDC)
+    try:
+        thisWetsuit = Wetsuit.objects.get(brand=brand, gender=gender, size=size, number=number)
+        print(bcolors.OKBLUE+"Successfully retrieved wetsuit object!"+bcolors.ENDC)
+    except:
+        print(bcolors.FAIL+"Error! Wetsuit does not exist!"+bcolors.ENDC)
+        return render(request, 'App/qrErrorPage.html')
+
     pk = thisWetsuit.pk
     signedOut=thisWetsuit.signedOut
     signedIn=thisWetsuit.signedIn
     onTrip=thisWetsuit.onTrip
     qrPath = 'qrCodes\\'+str(thisWetsuit.qrCode)
-    if(pk!=None):
-        print(bcolors.OKBLUE+"PK succesfully obtained!"+bcolors.ENDC)
-        print(bcolors.OKGREEN+"Loading info page"+bcolors.ENDC)
-        deleteUrl='../deleteItem/'+str(pk)
-        signOutUrl='../signOut/'+str(pk)
-        signInUrl='../signIn/'+str(pk)
-        onTripUrl='../onTrip/'+str(pk)
-        return render(request, 'App/wetsuit.html', {
-            'stockType' : 'wetsuit', 
-            'brand' : brand, 
-            'gender' : gender, 
-            'size' : size, 
-            'number' : number, 
-            'signedIn': signedIn,
-            'signedOut': signedOut,
-            'onTrip': onTrip,
-            'qrPath' : qrPath, 
-            'pk' : pk, 
-            'deleteUrl' : deleteUrl, 
-            'signOutUrl': signOutUrl,
-            'signInUrl': signInUrl,
-            'onTripUrl': onTripUrl,
-            }, print(bcolors.OKBLUE+"Successfully loaded wetsuit info page!"+bcolors.ENDC))
-    else:
-        print(bcolors.FAIL+"Error, PK is None!")
-        return render(request, 'App/pkErrorPage.html', print(bcolors.WARNING+'Successfully loaded pk error page'+bcolors.ENDC))
+    print(bcolors.OKGREEN+"Loading info page"+bcolors.ENDC)
+    deleteUrl='../deleteItem/'+str(pk)
+    signOutUrl='../signOut/'+str(pk)
+    signInUrl='../signIn/'+str(pk)
+    onTripUrl='../onTrip/'+str(pk)
+    return render(request, 'App/wetsuit.html', {
+        'stockType' : 'wetsuit', 
+        'brand' : brand, 
+        'gender' : gender, 
+        'size' : size, 
+        'number' : number, 
+        'signedIn': signedIn,
+        'signedOut': signedOut,
+        'onTrip': onTrip,
+        'qrPath' : qrPath, 
+        'pk' : pk, 
+        'deleteUrl' : deleteUrl, 
+        'signOutUrl': signOutUrl,
+        'signInUrl': signInUrl,
+        'onTripUrl': onTripUrl,
+        }, print(bcolors.OKBLUE+"Successfully loaded wetsuit info page!"+bcolors.ENDC))
 
 def stockForms(request):
     print(bcolors.OKBLUE+"Successfully loaded stock form selection page!"+bcolors.ENDC)
@@ -205,9 +207,24 @@ def signOut(request, pk):
             itemToSignOut.signedOut=True
             itemToSignOut.signedIn=False
             itemToSignOut.onTrip=False
-            itemToSignOut.save()
-            print(bcolors.OKBLUE+"Item successfully signed out!"+bcolors.ENDC)
-            return redirect(prevUrl)
+            print(bcolors.OKGREEN+"Checking for student name and id..."+bcolors.ENDC)
+            studentName = request.POST.get('studentName')
+            studentId = request.POST.get('studentId')
+            #Check if either are null
+            if(studentName!='' and studentId!=''):
+                print(bcolors.OKBLUE+"Retrieved a name and id!"+bcolors.ENDC)
+                itemToSignOut.name = studentName
+                itemToSignOut.studentId = studentId
+                print(bcolors.OKGREEN+"Attempting to sign out item..."+bcolors.ENDC)
+                itemToSignOut.save()
+                print(bcolors.OKBLUE+"Item successfully signed out!"+bcolors.ENDC)
+                return redirect(prevUrl)
+            else:
+                print(bcolors.OKBLUE+"Name and id not found"+bcolors.ENDC)
+                print(bcolors.OKGREEN+"Attempting to sign out item..."+bcolors.ENDC)
+                itemToSignOut.save()
+                print(bcolors.OKBLUE+"Item successfully signed out!"+bcolors.ENDC)
+                return redirect(prevUrl)
 
 def signIn(request, pk):
     print(bcolors.OKGREEN+"Attempting to sign in item..."+bcolors.ENDC)
@@ -225,6 +242,8 @@ def signIn(request, pk):
             itemToSignIn.signedOut=False
             itemToSignIn.onTrip=False
             itemToSignIn.signedIn=True
+            itemToSignIn.name = 'brumsurf'
+            itemToSignIn.studentId = '0000000'
             itemToSignIn.save()
             print(bcolors.OKBLUE+"Item successfully signed in!"+bcolors.ENDC)
             return redirect(prevUrl)
@@ -248,3 +267,7 @@ def onTrip(request, pk):
             itemToTrip.save()
             print(bcolors.OKBLUE+"Item successfully signed out on trip!"+bcolors.ENDC)
             return redirect(prevUrl)
+
+def inventory(request):
+    print('Inventory page')
+    return render(request, 'App/inventory.html')

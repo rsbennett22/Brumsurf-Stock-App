@@ -11,4 +11,5 @@ urlpatterns = [
     path('signOut/<int:pk>', views.signOut, name='signOut'),
     path('signIn/<int:pk>', views.signIn, name='signIn'),
     path('onTrip/<int:pk>', views.onTrip, name='onTrip'),
+    path('inventory/', views.inventory, name='inventory'),
 ]

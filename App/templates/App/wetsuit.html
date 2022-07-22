@@ -17,15 +17,21 @@
     <h2 id="status"></h2>
     <img src="{% static qrPath %}" alt="Item url">
     <br>
-    <form onsubmit="return confirm('Sign out wetsuit {{number}}?')" action="{{signOutUrl}}" method="POST">
-        {% csrf_token %}
-        <input id="signOutUrl" name="url" value="" hidden>
-        <button id="signOut" onclick="setCurrentUrl('signOutUrl')" type="submit">Sign Out</button>
-    </form>
     <form onsubmit="return confirm('Sign in wetsuit {{number}}?')" action="{{signInUrl}}" method="POST">
         {% csrf_token %}
         <input id="signInUrl" name="url" value="" hidden>
         <button id="signIn" onclick="setCurrentUrl('signInUrl')" type="submit">Sign In</button>
+    </form>
+    <form onsubmit="return confirm('Sign out wetsuit {{number}}?')" action="{{signOutUrl}}" method="POST">
+        {% csrf_token %}
+        Student Sign Out: <input type="checkbox" onchange="showHideSignOutOptions(this)">
+        <label for="studentName" id="nameLabel" style="display: none;">Name: </label>
+        <input type="text" id="studentName" name="studentName" maxlength="50" style="display: none;">
+        <label for="studentId" id="idLabel" style="display: none;">Student ID: </label>
+        <input type="text" id="studentId" name="studentId" minlength="7" maxlength="7" style="display: none;">
+        <br>
+        <input id="signOutUrl" name="url" value="" hidden>
+        <button id="signOut" onclick="setCurrentUrl('signOutUrl')" type="submit">Sign Out</button>
     </form>
     <form onsubmit="return confirm('Trip sign out wetsuit {{number}}?')" action="{{onTripUrl}}" method="POST">
         {% csrf_token %}
@@ -67,6 +73,29 @@
                 number = document.getElementById('number').getAttribute('number');
                 console.log(brand, gender, size, number);
                 window.location.replace('../wetsuit/'+brand+'&'+gender+'&'+size+'&'+number);
+            }
+        }
+        function showHideSignOutOptions(element) {
+            nameField = document.getElementById('studentName');
+            nameLabel = document.getElementById('nameLabel');
+            idField = document.getElementById('studentId');
+            idLabel = document.getElementById('idLabel')
+            if(element.checked) {
+                //Show input fields for name and id
+                nameField.style.display = 'block';
+                nameLabel.style.display = 'block';
+                idField.style.display = 'block';
+                idLabel.style.display = 'block';
+            }
+            else {
+                //Hide elements
+                nameField.style.display = 'none';
+                nameLabel.style.display = 'none';
+                idField.style.display = 'none';
+                idLabel.style.display = 'none';
+                //Clear fields
+                nameField.value=''
+                idField.value=''
             }
         }
     </script>
