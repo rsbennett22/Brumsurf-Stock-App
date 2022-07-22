@@ -106,6 +106,10 @@ def addNewWetsuit(request):
             else:
                 return print(bcolors.FAIL+"Error, number is None!"+bcolors.ENDC)
             
+
+            #Implement feature that checks if wetsuit number already exists, if does, loop to find the next possible number
+
+
             fileName=newWetsuit.brand+newWetsuit.gender+newWetsuit.size+newWetsuit.number+'.png'
             print(bcolors.OKGREEN+"Checking if QR code matching "+fileName+" exists..."+bcolors.ENDC)
             #Check if QR code matching info exists
