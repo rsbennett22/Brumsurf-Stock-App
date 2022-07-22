@@ -30,6 +30,7 @@ class StockItem(models.Model):
     name = models.CharField(default='brumsurf', max_length=50)
     studentId = models.CharField(default='0000000', max_length=7, validators=[MinLengthValidator(7)])
     qrCode = models.ImageField()
+    url = models.URLField(default=None)
 
     def __str__(self):
         return (self.stockType+'_'+self.brand+'_'+self.size+'_'+str(self.number))
