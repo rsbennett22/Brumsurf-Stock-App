@@ -1,9 +1,10 @@
+from multiprocessing.context import BaseContext
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import qrcode
 from os.path import exists
 from os import remove
-from .models import StockItem, Wetsuit, Surfboard
+from .models import StockItem, Wetsuit, Surfboard, Surfskate, Boot, Glove, Hood
 import socket
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -25,6 +26,18 @@ def index(request):
     print(IP)
     return render(request, 'App/index.html',print(bcolors.OKBLUE+'Successfully loaded home page!'+bcolors.ENDC))
 
+def inventory(request):
+    print(bcolors.OKBLUE+"Successfully loaded inventory page!"+bcolors.ENDC)
+    #This page displays a list of all stock items in a table like format
+    #User can click on an item and see it's detail page
+    wetsuits = Wetsuit.objects.all().order_by('wetsuitNumber')
+    surfboards = Surfboard.objects.all().order_by('surfboardNumber')
+    surfskates = Surfskate.objects.all().order_by('surfskateNumber')
+    boots = Boot.objects.all().order_by('bootAmount')
+    gloves = Glove.objects.all().order_by('gloveAmount')
+    hoods = Hood.objects.all().order_by('hoodAmount')
+    return render(request, 'App/inventory.html', {'wetsuits' : wetsuits, 'surfboards': surfboards, 'surfskates': surfskates, 'boots': boots, 'gloves': gloves, 'hoods': hoods})
+
 def stockForms(request):
     print(bcolors.OKBLUE+"Successfully loaded stock form selection page!"+bcolors.ENDC)
     return render(request, 'App/stockForms.html')
@@ -36,6 +49,193 @@ def wetsuitForm(request):
 def surfboardForm(request):
     stockType='Surfboard'
     return render(request, 'App/generateItemForm.html', {'stockType': stockType},print(bcolors.OKBLUE+"Successfully loaded surfboard form page!"+bcolors.ENDC))
+
+def surfskateForm(request):
+    stockType='Surfskate'
+    return render(request, 'App/generateItemForm.html', {'stockType': stockType},print(bcolors.OKBLUE+"Successfully loaded surfskate form page!"+bcolors.ENDC))
+
+def bootForm(request):
+    stockType='Boot'
+    return render(request, 'App/generateItemForm.html', {'stockType': stockType},print(bcolors.OKBLUE+"Successfully loaded boots form page!"+bcolors.ENDC))
+
+def gloveForm(request):
+    stockType='Glove'
+    return render(request, 'App/generateItemForm.html', {'stockType': stockType},print(bcolors.OKBLUE+"Successfully loaded glove form page!"+bcolors.ENDC))
+
+def hoodForm(request):
+    stockType='Hood'
+    return render(request, 'App/generateItemForm.html', {'stockType': stockType},print(bcolors.OKBLUE+"Successfully loaded hood form page!"+bcolors.ENDC))
+
+def addNewItem(request):
+    if(request.method=='POST'):
+        stockType=''
+        brand=''
+        gender=''
+        size=''
+        number=''
+        #Check stockType
+        if(request.POST.get('stockType')=='Wetsuit'):
+            print(bcolors.OKGREEN+"Setting wetsuit specific details..."+bcolors.ENDC)
+            stockType = 'wetsuit'
+            gender = request.POST.get('gender')
+            print(bcolors.OKBLUE+"Successfully set details: stockType: "+stockType+" and gender: "+gender+"!"+bcolors.ENDC)
+        elif(request.POST.get('stockType')=='Surfboard'):
+            print(bcolors.OKGREEN+"Setting stocktype to surfboard..."+bcolors.ENDC)
+            stockType = 'surfboard'
+            print(bcolors.OKBLUE+"Successfully set stocktype to surfboard!"+bcolors.ENDC)
+        elif(request.POST.get('stockType')=='Surfskate'):
+            print(bcolors.OKGREEN+"Setting stocktype to surfskate..."+bcolors.ENDC)
+            stockType = 'surfskate'
+            print(bcolors.OKBLUE+"Successfully set stocktype to surfskate!"+bcolors.ENDC)
+        elif(request.POST.get('stockType')=='Boot'):
+            print(bcolors.OKGREEN+"Setting stocktype to boot..."+bcolors.ENDC)
+            stockType = 'boot'
+            print(bcolors.OKBLUE+"Successfully set stocktype to boot!"+bcolors.ENDC)
+        elif(request.POST.get('stockType')=='Glove'):
+            print(bcolors.OKGREEN+"Setting stocktype to glove..."+bcolors.ENDC)
+            stockType = 'glove'
+            print(bcolors.OKBLUE+"Successfully set stocktype to glove!"+bcolors.ENDC)
+        else:
+            print(bcolors.OKGREEN+"Setting stocktype to hood..."+bcolors.ENDC)
+            stockType = 'hood'
+            print(bcolors.OKBLUE+"Successfully set stocktype to hood!"+bcolors.ENDC)
+
+        print(bcolors.OKGREEN+"Attempting to add new "+stockType+" to db..."+bcolors.ENDC)
+        brand = request.POST.get('brand')
+        size = request.POST.get('size')
+        if(size==None):
+            size=''
+        number = checkForMatchingNum(stockType, request.POST.get('num'))
+        print(bcolors.OKBLUE+"Retrieved item info: "+stockType, brand, gender, str(size), str(number)+bcolors.ENDC)
+        
+        if(stockType=='boot' or stockType=='glove' or stockType=='hood'):
+            if(stockType=='boot'):
+                #Check for matching item
+                try:
+                    matchingBoot = Boot.objects.get(brand=brand, size=size)
+                    #If match item, load detail page
+                    return accessoryDetail(request, matchingBoot.pk)
+                except:
+                    #No matching item
+                    #Set amount and save
+                    amount = request.POST.get('amount')
+                    #Create new boot instance
+                    newBoot = Boot()
+                    newBoot.stockType=stockType
+                    newBoot.brand=brand
+                    newBoot.size=size
+                    newBoot.bootAmount=amount
+                    newBoot.url=''
+                    #Save boot
+                    newBoot.save()
+                    #Get newboot pk
+                    bootMade = Boot.objects.get(brand=brand, size=size)
+                    pk = bootMade.pk
+                    bootMade.url = 'http://192.168.0.58:8000/detail/'+str(pk)
+                    bootMade.save()
+                    #Load accessory details page
+                    return accessoryDetail(request, pk)
+            elif(stockType=='glove'):
+                #Check for matching item
+                try:
+                    matchingGlove = Glove.objects.get(brand=brand, size=size)
+                    #If match item, load detail page
+                    return accessoryDetail(request, matchingGlove.pk)
+                except:
+                    #No matching item
+                    #Set amount and save
+                    amount = request.POST.get('amount')
+                    #Create new boot instance
+                    newGlove = Glove()
+                    newGlove.stockType=stockType
+                    newGlove.brand=brand
+                    newGlove.size=size
+                    newGlove.gloveAmount=amount
+                    newGlove.url=''
+                    #Save boot
+                    newGlove.save()
+                    #Get newboot pk
+                    gloveMade = Glove.objects.get(brand=brand, size=size)
+                    pk = gloveMade.pk
+                    gloveMade.url = 'http://192.168.0.58:8000/detail/'+str(pk)
+                    gloveMade.save()
+                    #Load accessory details page
+                    return accessoryDetail(request, pk)
+            else:
+                #Check for matching item
+                try:
+                    matchingHood = Hood.objects.get(brand=brand, size=size)
+                    #If match item, load detail page
+                    return accessoryDetail(request, matchingHood.pk)
+                except:
+                    #No matching item
+                    #Set amount and save
+                    amount = request.POST.get('amount')
+                    #Create new boot instance
+                    newHood = Hood()
+                    newHood.stockType=stockType
+                    newHood.brand=brand
+                    newHood.size=size
+                    newHood.hoodAmount=amount
+                    newHood.url=''
+                    #Save boot
+                    newHood.save()
+                    #Get newboot pk
+                    hoodMade = Hood.objects.get(brand=brand, size=size)
+                    pk = hoodMade.pk
+                    hoodMade.url = 'http://192.168.0.58:8000/detail/'+str(pk)
+                    hoodMade.save()
+                    #Load accessory details page
+                    return accessoryDetail(request, pk)
+                
+        else:
+            #Create a filename for the qr code using data from request
+            fileName=stockType+brand+gender+str(size)+str(number)+'.png'
+            #Check if qr code matchng filename exists
+            if(checkForQR(fileName)):
+                #Load surfboard info page
+                return itemDetail(request, stockType, number)
+            else:
+                #Generate QR code for item
+                generateQRCode(stockType, brand, gender, size, number, fileName)
+                #Create a new item object and add it to db
+                if(stockType=='wetsuit'):
+                    print(bcolors.OKGREEN+"Creating a new "+stockType+" instance!"+bcolors.ENDC)
+                    newWetsuit = Wetsuit()
+                    newWetsuit.stockType=stockType
+                    newWetsuit.brand=brand
+                    newWetsuit.gender=gender
+                    newWetsuit.size=size
+                    newWetsuit.wetsuitNumber=number
+                    newWetsuit.qrCode=fileName
+                    newWetsuit.url='http://192.168.0.58:8000/detail/'+stockType+'&'+str(number)
+                    newWetsuit.save()
+                    print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
+                    return itemDetail(request, stockType, number)
+                elif(stockType=='surfboard'):
+                    print(bcolors.OKGREEN+"Creating a new "+stockType+" instance!"+bcolors.ENDC)
+                    newBoard = Surfboard()
+                    newBoard.stockType=stockType
+                    newBoard.brand=brand
+                    newBoard.size=size
+                    newBoard.surfboardNumber=number
+                    newBoard.qrCode=fileName
+                    newBoard.url='http://192.168.0.58:8000/detail/'+stockType+'&'+str(number)
+                    newBoard.save()
+                    print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
+                    return itemDetail(request, stockType, number)
+                elif(stockType=='surfskate'):
+                    print(bcolors.OKGREEN+"Creating a new "+stockType+" instance!"+bcolors.ENDC)
+                    newBoard = Surfskate()
+                    newBoard.stockType=stockType
+                    newBoard.brand=brand
+                    newBoard.size=size
+                    newBoard.surfskateNumber=number
+                    newBoard.qrCode=fileName
+                    newBoard.url='http://192.168.0.58:8000/detail/'+stockType+'&'+str(number)
+                    newBoard.save()
+                    print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
+                    return itemDetail(request, stockType, number)
 
 def itemDetail(request, stockType, number):
     gender = ''
@@ -51,6 +251,12 @@ def itemDetail(request, stockType, number):
         #Get surfboard details
         print(bcolors.OKGREEN+"Getting "+stockType+" specific details..."+bcolors.ENDC)
         thisBoard = Surfboard.objects.get(surfboardNumber=number)
+        pk = thisBoard.pk
+        print(bcolors.OKBLUE+"Retrieved pk: "+str(pk)+bcolors.ENDC)
+    elif(stockType=='surfskate'):
+        #Get surfboard details
+        print(bcolors.OKGREEN+"Getting "+stockType+" specific details..."+bcolors.ENDC)
+        thisBoard = Surfskate.objects.get(surfskateNumber=number)
         pk = thisBoard.pk
         print(bcolors.OKBLUE+"Retrieved pk: "+str(pk)+bcolors.ENDC)
 
@@ -88,65 +294,25 @@ def itemDetail(request, stockType, number):
         'onTripUrl': onTripUrl,
     }, print(bcolors.OKBLUE+'Loaded item detail page!'+bcolors.ENDC))
 
-def addNewItem(request):
-    if(request.method=='POST'):
-        stockType=''
-        brand=''
-        gender=''
-        size=''
-        number=''
-        #Check stockType
-        if(request.POST.get('stockType')=='Wetsuit'):
-            print(bcolors.OKGREEN+"Setting wetsuit specific details..."+bcolors.ENDC)
-            stockType = 'wetsuit'
-            gender = request.POST.get('gender')
-            print(bcolors.OKBLUE+"Successfully set details: stockType: "+stockType+" and gender: "+gender+"!"+bcolors.ENDC)
-        elif(request.POST.get('stockType')=='Surfboard'):
-            print(bcolors.OKGREEN+"Setting stocktype to surfboard..."+bcolors.ENDC)
-            stockType = 'surfboard'
-            print(bcolors.OKBLUE+"Successfully set stocktype to surfboard!"+bcolors.ENDC)
+def accessoryDetail(request, pk):
+    #Get item info
+    item = StockItem.objects.get(pk=pk)
+    stockType = item.stockType
+    brand = item.brand
+    size = item.size
+    amount = ''
+    if(stockType=='boot'):
+        amount=Boot.objects.get(pk=pk).bootAmount
+    elif(stockType=='glove'):
+        amount=Glove.objects.get(pk=pk).gloveAmount
+    else:
+        amount=Hood.objects.get(pk=pk).hoodAmount
+    
+    deleteUrl = '../deleteItem/'+str(pk)
+    updateUrl = '../updateItem/'+str(pk)
 
-        print(bcolors.OKGREEN+"Attempting to add new "+stockType+" to db..."+bcolors.ENDC)
-        brand = request.POST.get('brand')
-        size = request.POST.get('size')
-        number = checkForMatchingNum(stockType, request.POST.get('num'))
-        print(bcolors.OKBLUE+"Retrieved item info: "+stockType, brand, gender, str(size), str(number)+bcolors.ENDC)
-        
-        #Create a filename for the qr code using data from request
-        fileName=stockType+brand+gender+str(size)+str(number)+'.png'
-        #Check if qr code matchng filename exists
-        if(checkForQR(fileName)):
-            #Load surfboard info page
-            return itemDetail(request, stockType, number)
-        else:
-            #Generate QR code for item
-            generateQRCode(stockType, brand, gender, size, number, fileName)
-            #Create a new item object and add it to db
-            if(stockType=='wetsuit'):
-                print(bcolors.OKGREEN+"Creating a new "+stockType+" instance!"+bcolors.ENDC)
-                newWetsuit = Wetsuit()
-                newWetsuit.stockType=stockType
-                newWetsuit.brand=brand
-                newWetsuit.gender=gender
-                newWetsuit.size=size
-                newWetsuit.wetsuitNumber=number
-                newWetsuit.qrCode=fileName
-                newWetsuit.url='http://192.168.0.58:8000/detail/'+stockType+'&'+str(number)
-                newWetsuit.save()
-                print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
-                return itemDetail(request, stockType, number)
-            elif(stockType=='surfboard'):
-                print(bcolors.OKGREEN+"Creating a new "+stockType+" instance!"+bcolors.ENDC)
-                newBoard = Surfboard()
-                newBoard.stockType=stockType
-                newBoard.brand=brand
-                newBoard.size=size
-                newBoard.surfboardNumber=number
-                newBoard.qrCode=fileName
-                newBoard.url='http://192.168.0.58:8000/detail/'+stockType+'&'+str(number)
-                newBoard.save()
-                print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
-                return itemDetail(request, stockType, number)
+    #Load detail page
+    return render(request, 'App/accessoryDetail.html', {'stockType': stockType, 'brand': brand, 'size': size, 'amount': amount, 'pk': pk, 'deleteUrl': deleteUrl, 'updateUrl': updateUrl})
 
 def generateQRCode(stockType, brand, gender, size, number, fileName):
     print(bcolors.OKGREEN+"Generating a new"+stockType+" QR code..."+bcolors.ENDC)
@@ -173,6 +339,10 @@ def checkForMatchingNum(stockType, number):
             numItem = Surfboard.objects.get(surfboardNumber=number)
             number = getNextNum(1, 'surfboard')
             return number
+        elif(stockType=='surfskate'):
+            numItem = Surfskate.objects.get(surfskateNumber=number)
+            number = getNextNum(1, 'surfskate')
+            return number
     except:
         #If not found, continue
         print(bcolors.OKBLUE+stockType+" number is ok!"+bcolors.ENDC)
@@ -197,6 +367,15 @@ def getNextNum(number, stockType):
         except:
             print(bcolors.OKBLUE+"New number: "+str(number)+bcolors.ENDC)
             return number
+    elif(stockType=='surfskate'):
+        try:
+            #If no exception, recursive call number+1
+            availableNum = Surfskate.objects.get(surfskateNumber=number)
+            num = number + 1
+            return getNextNum(num, 'surfskate')
+        except:
+            print(bcolors.OKBLUE+"New number: "+str(number)+bcolors.ENDC)
+            return number
 
 def checkForQR(fileName):
     path = 'static\\qrcodes\\'+fileName
@@ -207,6 +386,18 @@ def checkForQR(fileName):
     else:
         print(bcolors.WARNING+"QR code does not exist!"+bcolors.ENDC)
         return False
+
+def deleteItem(request, pk):
+    itemToDelete = StockItem.objects.get(pk=pk)
+    stockType=itemToDelete.stockType
+    if(stockType=='boot' or stockType=='glove' or stockType=='hood'):
+        itemToDelete.delete()
+        return redirect('/')
+    else:
+        qrCode = str(itemToDelete.qrCode)
+        deleteQRCode(qrCode)
+        itemToDelete.delete()
+        return redirect('/')
 
 def deleteQRCode(fileName):
     path='static\\qrcodes\\'+fileName
@@ -220,12 +411,34 @@ def deleteQRCode(fileName):
     else:
         return print(bcolors.FAIL+"Error! File does not exist!"+bcolors.ENDC)
 
-def deleteItem(request, pk):
-    itemToDelete = StockItem.objects.get(pk=pk)
-    qrCode = str(itemToDelete.qrCode)
-    deleteQRCode(qrCode)
-    itemToDelete.delete()
-    return redirect('/')
+def updateItem(request, pk, amount):
+    print(bcolors.OKGREEN+"Trying to update item..."+bcolors.ENDC)
+    try:
+        itemToUpdate = StockItem.objects.get(pk=pk)
+        if(itemToUpdate.stockType=='boot'):
+            print(bcolors.OKGREEN+"Setting new amount value..."+bcolors.ENDC)
+            bootToUpdate=Boot.objects.get(pk=pk)
+            bootToUpdate.bootAmount = amount
+            bootToUpdate.save()
+            print(bcolors.OKBLUE+"Item updated successfully!"+bcolors.ENDC)
+            return accessoryDetail(request, pk)
+        elif(itemToUpdate.stockType=='glove'):
+            print(bcolors.OKGREEN+"Setting new amount value..."+bcolors.ENDC)
+            gloveToUpdate=Glove.objects.get(pk=pk)
+            gloveToUpdate.gloveAmount = amount
+            gloveToUpdate.save()
+            print(bcolors.OKBLUE+"Item updated successfully!"+bcolors.ENDC)
+            return accessoryDetail(request, pk)
+        else:
+            print(bcolors.OKGREEN+"Setting new amount value..."+bcolors.ENDC)
+            hoodToUpdate=Hood.objects.get(pk=pk)
+            hoodToUpdate.hoodAmount = amount
+            hoodToUpdate.save()
+            print(bcolors.OKBLUE+"Item updated successfully!"+bcolors.ENDC)
+            return accessoryDetail(request, pk)
+    except:
+        return (accessoryDetail(request, pk),print(bcolors.FAIL+"Failed to update item!"+bcolors.ENDC))
+
 
 def signOut(request, pk):
     print(bcolors.OKGREEN+"Attempting to sign out item..."+bcolors.ENDC)
@@ -297,12 +510,3 @@ def onTrip(request, pk):
             itemToTrip.save()
             print(bcolors.OKBLUE+"Item successfully signed out on trip!"+bcolors.ENDC)
             return redirect(prevUrl)
-
-def inventory(request):
-    print(bcolors.OKBLUE+"Successfully loaded inventory page!"+bcolors.ENDC)
-    #This page displays a list of all stock items in a table like format
-    #User can click on an item and see it's detail page
-    wetsuits = Wetsuit.objects.all().order_by('wetsuitNumber')
-    surfboards = Surfboard.objects.all().order_by('surfboardNumber')
-    #surfboards = StockItem.objects.get(stockType='surfboard')
-    return render(request, 'App/inventory.html', {'wetsuits' : wetsuits, 'surfboards': surfboards})

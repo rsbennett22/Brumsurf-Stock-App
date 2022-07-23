@@ -23,11 +23,12 @@
             <option value="male">Male</option>
             <option value="female">Female</option>
         </select>
-        <br id="break" class="hidden">
-        Size: <select id="size" name="size" required>
+        <br id="gBreak" class="hidden">
+        <label for="size" id="sizeLabel">Size: </label><select id="size" name="size">
         </select>
-        <br>
-        Number: <input type="number" id="num" name="num" min="1" required>
+        <br id="sBreak">
+        <label for="number" id="numLabel">Number: </label><input type="number" id="num" name="num" min="1">
+        <label for="amount" id="amountLabel" class="hidden">Amount: </label><input type="number" id="amount" name="amount" min="1" class="hidden">
         <br>
         <input type="submit" value="Submit">
     </form>
@@ -43,7 +44,7 @@
                 console.log('Wetsuit form page loaded');
                 document.getElementById('genderLabel').className='shown';
                 document.getElementById('gender').className='shown';
-                document.getElementById('break').className='shown';
+                document.getElementById('gBreak').className='shown';
                 //Add options to brand
                 createOption(brandOptions, 'oneil');
                 createOption(brandOptions, 'twobarefeet');
@@ -62,6 +63,71 @@
                 createOption(sizeOptions, "6'0");
                 createOption(sizeOptions, "7'0");
                 createOption(sizeOptions, "8'0");
+            }
+            else if("{{stockType}}".toLowerCase()=='surfskate') {
+                console.log('Surfboard form page loaded');
+                //Add options to brand
+                createOption(brandOptions, 'slide');
+                createOption(brandOptions, 'yow');
+                createOption(brandOptions, 'carver');
+                //...//
+                //Hide size option
+                document.getElementById('size').className='hidden';
+                document.getElementById('sizeLabel').className='hidden';
+                document.getElementById('sBreak').className='hidden';
+            }
+            else if("{{stockType}}".toLowerCase()=='boot') {
+                console.log('Boots form page loaded');
+                //Add options to brand
+                createOption(brandOptions, 'cskin');
+                createOption(brandOptions, 'oneil');
+                //...//
+                //Set size options
+                for(i=1; i<=12; i++) {
+                    createOption(sizeOptions, i.toString())
+                }
+                //Hide number option
+                document.getElementById('num').className='hidden'
+                document.getElementById('numLabel').className='hidden'
+                //Show amount option
+                document.getElementById('amount').className='shown'
+                document.getElementById('amountLabel').className='shown'
+            }
+            else if("{{stockType}}".toLowerCase()=='glove') {
+                console.log('Gloves form page loaded');
+                //Add options to brand
+                createOption(brandOptions, 'cskin');
+                createOption(brandOptions, 'oneil');
+                //...//
+                //Set size options
+                createOption(sizeOptions, 'small');
+                createOption(sizeOptions, 'medium');
+                createOption(sizeOptions, 'large');
+                createOption(sizeOptions, 'x-large');
+                //Hide number option
+                document.getElementById('num').className='hidden'
+                document.getElementById('numLabel').className='hidden'
+                //Show amount option
+                document.getElementById('amount').className='shown'
+                document.getElementById('amountLabel').className='shown'
+            }
+            else {
+                console.log('Hoods form page loaded');
+                //Add options to brand
+                createOption(brandOptions, 'cskin');
+                createOption(brandOptions, 'oneil');
+                //...//
+                //Set size options
+                createOption(sizeOptions, 'small');
+                createOption(sizeOptions, 'medium');
+                createOption(sizeOptions, 'large');
+                createOption(sizeOptions, 'x-large');
+                //Hide number option
+                document.getElementById('num').className='hidden'
+                document.getElementById('numLabel').className='hidden'
+                //Show amount option
+                document.getElementById('amount').className='shown'
+                document.getElementById('amountLabel').className='shown'
             }
         }
         function createOption(parent, value) {

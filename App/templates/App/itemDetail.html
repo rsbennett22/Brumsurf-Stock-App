@@ -54,7 +54,10 @@
                 //Unhide gender header
                 document.getElementById('gender').className='shown'
             }
-
+            if("{{stockType}}"=='surfskate') {
+                //Unhide gender header
+                document.getElementById('size').className='hidden'
+            }
             //Get status of item, signedIn, signedOut and onTrip and disable/enable buttons accordingly
             var signedIn = "{{signedIn}}";
             var signedOut = "{{signedOut}}";
