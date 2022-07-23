@@ -26,8 +26,85 @@
             <td>{{ wetty.brand }}</a></td>
             <td>{{ wetty.gender }}</a></td>
             <td>{{ wetty.size }}</a></td>
-            <td>{{ wetty.number }}</td>
+            <td>{{ wetty.wetsuitNumber }}</td>
             <td><a href='{{ wetty.url }}'>{{ wetty.url }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Surfboards</h2>
+    <table>
+        <tr>
+            <th>Brand</th>
+            <th>Size</th>
+            <th>Number</th>
+            <th>Url</th>
+        </tr>
+        {% for surf in surfboards %}
+        <tr>
+            <td>{{ surf.brand }}</a></td>
+            <td>{{ surf.size }}</a></td>
+            <td>{{ surf.surfboardNumber }}</td>
+            <td><a href='{{ surf.url }}'>{{ surf.url }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Surfskates</h2>
+    <table>
+        <tr>
+            <th>Brand</th>
+            <th>Number</th>
+            <th>Url</th>
+        </tr>
+        {% for skate in surfskates %}
+        <tr>
+            <td>{{ skate.brand }}</a></td>
+            <td>{{ skate.surfskateNumber }}</td>
+            <td><a href='{{ skate.url }}'>{{ skate.url }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Boots</h2>
+    <table>
+        <tr>
+            <th>Brand</th>
+            <th>Total</th>
+            <th>Url</th>
+        </tr>
+        {% for boot in boots %}
+        <tr>
+            <td>{{ boot.brand }}</a></td>
+            <td>{{ boot.bootAmount }}</td>
+            <td><a href='{{ boot.url }}'>{{ boot.url }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Gloves</h2>
+    <table>
+        <tr>
+            <th>Brand</th>
+            <th>Total</th>
+            <th>Url</th>
+        </tr>
+        {% for glove in gloves %}
+        <tr>
+            <td>{{ glove.brand }}</a></td>
+            <td>{{ glove.gloveAmount }}</td>
+            <td><a href='{{ glove.url }}'>{{ glove.url }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Hoods</h2>
+    <table>
+        <tr>
+            <th>Brand</th>
+            <th>Total</th>
+            <th>Url</th>
+        </tr>
+        {% for hood in hoods %}
+        <tr>
+            <td>{{ hood.brand }}</a></td>
+            <td>{{ hood.hoodAmount }}</td>
+            <td><a href='{{ hood.url }}'>{{ hood.url }}</a></td>
         </tr>
         {% endfor %}
     </table>

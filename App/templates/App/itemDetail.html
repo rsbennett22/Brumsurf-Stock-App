@@ -5,24 +5,25 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/itemDetail.css' %}">
     <title>Brumsurf Stock App</title>
 </head>
 <body onload="setDefaultsAndReload()">
     <button onclick="location.href='/'">Home</button>
     <h1>{{stockType}}</h1>
     <h2 id="brand" brand="{{brand}}">Brand: {{brand}}</h2>
-    <h2 id="gender" gender="{{gender}}">Gender: {{gender}}</h2>
+    <h2 id="gender" gender="{{gender}}" class="hidden">Gender: {{gender}}</h2>
     <h2 id="size" size="{{size}}">Size: {{size}}</h2>
-    <h2 id="number" number="{{number}}">Wetsuit number: {{number}}</h2>
+    <h2 id="number" number="{{number}}">{{stockType}} number: {{number}}</h2>
     <h2 id="status"></h2>
-    <img src="{% static qrPath %}" alt="Item url">
+    <img src="{% static qrCode %}" alt="Item url">
     <br>
-    <form onsubmit="return confirm('Sign in wetsuit {{number}}?')" action="{{signInUrl}}" method="POST">
+    <form onsubmit="return confirm('Sign in {{stockType}} {{number}}?')" action="{{signInUrl}}" method="POST">
         {% csrf_token %}
         <input id="signInUrl" name="url" value="" hidden>
         <button id="signIn" onclick="setCurrentUrl('signInUrl')" type="submit">Sign In</button>
     </form>
-    <form onsubmit="return confirm('Sign out wetsuit {{number}}?')" action="{{signOutUrl}}" method="POST">
+    <form onsubmit="return confirm('Sign out {{stockType}} {{number}}?')" action="{{signOutUrl}}" method="POST">
         {% csrf_token %}
         Student Sign Out: <input type="checkbox" onchange="showHideSignOutOptions(this)">
         <label for="studentName" id="nameLabel" style="display: none;">Name: </label>
@@ -33,12 +34,12 @@
         <input id="signOutUrl" name="url" value="" hidden>
         <button id="signOut" onclick="setCurrentUrl('signOutUrl')" type="submit">Sign Out</button>
     </form>
-    <form onsubmit="return confirm('Trip sign out wetsuit {{number}}?')" action="{{onTripUrl}}" method="POST">
+    <form onsubmit="return confirm('Trip sign out {{stockType}} {{number}}?')" action="{{onTripUrl}}" method="POST">
         {% csrf_token %}
         <input id="onTripUrl" name="url" value="" hidden>
         <button id="onTrip" onclick="setCurrentUrl('onTripUrl')" type="submit">Trip Sign Out</button>
     </form>
-    <form id="deleteItem" onsubmit="return confirm('Are you sure you want to delete this wetsuit?')" action="{{deleteUrl}}" method="POST">
+    <form id="deleteItem" onsubmit="return confirm('Are you sure you want to delete this {{stockType}}?')" action="{{deleteUrl}}" method="POST">
         {% csrf_token %}
         <button type="submit">Delete</button>
     </form>
@@ -49,7 +50,14 @@
         }
 
         function setDefaultsAndReload() {
-
+            if("{{stockType}}"=='wetsuit') {
+                //Unhide gender header
+                document.getElementById('gender').className='shown'
+            }
+            if("{{stockType}}"=='surfskate') {
+                //Unhide gender header
+                document.getElementById('size').className='hidden'
+            }
             //Get status of item, signedIn, signedOut and onTrip and disable/enable buttons accordingly
             var signedIn = "{{signedIn}}";
             var signedOut = "{{signedOut}}";
@@ -64,15 +72,15 @@
                 document.getElementById('onTrip').disabled = true;
                 document.getElementById('signOut').disabled = true;
             }
-
-            if(window.location.href == 'http://192.168.0.58:8000/addNewWetsuit/')
-            {
-                brand = document.getElementById('brand').getAttribute('brand');
-                gender = document.getElementById('gender').getAttribute('gender');
-                size = document.getElementById('size').getAttribute('size');
-                number = document.getElementById('number').getAttribute('number');
-                console.log(brand, gender, size, number);
-                window.location.replace('../wetsuit/'+brand+'&'+gender+'&'+size+'&'+number);
+            if(window.location.href == 'http://192.168.0.58:8000/addNewItem/') {
+                if("{{stockType}}"=='wetsuit') {
+                    url = 'http://192.168.0.58:8000/detail/wetsuit&'+"{{number}}"
+                    window.location.replace(url)
+                }
+                else if("{{stockType}}"=='surfboard') {
+                    url = 'http://192.168.0.58:8000/detail/surfboard&'+"{{number}}"
+                    window.location.replace(url)
+                }
             }
         }
         function showHideSignOutOptions(element) {

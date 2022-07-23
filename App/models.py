@@ -23,7 +23,6 @@ class StockItem(models.Model):
     stockType = models.CharField(max_length=15)
     brand = models.CharField(max_length=30)
     size = models.CharField(max_length=10)
-    number = models.PositiveBigIntegerField(default=0, validators=[MinValueValidator(1)], unique=True)
     onTrip = models.BooleanField(default=False)
     signedOut = models.BooleanField(default=False)
     signedIn = models.BooleanField(default=True)
@@ -31,11 +30,38 @@ class StockItem(models.Model):
     studentId = models.CharField(default='0000000', max_length=7, validators=[MinLengthValidator(7)])
     qrCode = models.ImageField()
     url = models.URLField(default=None)
+    number=0
 
     def __str__(self):
         return (self.stockType+'_'+self.brand+'_'+self.size+'_'+str(self.number))
 
 class Wetsuit(StockItem):
     gender = models.CharField(max_length=6)
+    wetsuitNumber = models.PositiveIntegerField(default=0, unique=True)
     def __str__(self):
-        return (self.stockType+'_'+self.brand+'_'+self.gender+'_'+self.size+'_'+str(self.number))
+        return (self.stockType+'_'+self.brand+'_'+self.gender+'_'+self.size+'_'+str(self.wetsuitNumber))
+
+class Surfboard(StockItem):
+    surfboardNumber = models.PositiveIntegerField(default=0, unique=True)
+    def __str__(self):
+        return (self.stockType+'_'+self.brand+'_'+self.size+'_'+str(self.surfboardNumber))
+
+class Surfskate(StockItem):
+    surfskateNumber = models.PositiveIntegerField(default=0, unique=True)
+    def __str__(self):
+        return (self.stockType+'_'+self.brand+'_'+str(self.surfskateNumber))
+
+class Boot(StockItem):
+    bootAmount = models.PositiveIntegerField(default=0)
+    def __str__(self):
+        return (self.stockType+'_'+self.brand+'_'+self.size)
+
+class Glove(StockItem):
+    gloveAmount = models.PositiveIntegerField(default=0)
+    def __str__(self):
+        return (self.stockType+'_'+self.brand+'_'+self.size)
+
+class Hood(StockItem):
+    hoodAmount = models.PositiveIntegerField(default=0)
+    def __str__(self):
+        return (self.stockType+'_'+self.brand+'_'+self.size)
