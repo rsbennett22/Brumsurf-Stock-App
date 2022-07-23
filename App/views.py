@@ -22,6 +22,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 def index(request):
+    print(IP)
     return render(request, 'App/index.html',print(bcolors.OKBLUE+'Successfully loaded home page!'+bcolors.ENDC))
 
 def stockForms(request):
@@ -37,93 +38,79 @@ def surfboardForm(request):
     return render(request, 'App/generateItemForm.html', {'stockType': stockType},print(bcolors.OKBLUE+"Successfully loaded surfboard form page!"+bcolors.ENDC))
 
 def itemDetail(request, stockType, number):
+    gender = ''
+    pk = ''
     if(stockType=='wetsuit'):
-        #Get wetsuit
+        #Get wetsuit details
         thisWetty = Wetsuit.objects.get(wetsuitNumber=number)
-        #Send relevant info to html page
-        brand = thisWetty.brand
-        gender = thisWetty.gender
-        size = thisWetty.size
-        onTrip = thisWetty.onTrip
-        signedOut = thisWetty.signedOut
-        signedIn = thisWetty.signedIn
-        qrCode = thisWetty.qrCode
+        gender=thisWetty.gender
         pk = thisWetty.pk
-        deleteUrl = '../deleteItem/'+str(pk)
-        signOutUrl='../signOut/'+str(pk)
-        signInUrl='../signIn/'+str(pk)
-        onTripUrl='../onTrip/'+str(pk)
-        #Load detail page
-        return render(request, 'App/itemDetail.html', {
-            'stockType': stockType,
-            'brand': brand,
-            'gender': gender,
-            'size': size,
-            'number': number,
-            'onTrip': onTrip,
-            'signedOut': signedOut,
-            'signedIn': signedIn,
-            'qrCode': 'qrCodes\\'+str(qrCode),
-            'pk': pk,
-            'deleteUrl': deleteUrl,
-            'signOutUrl': signOutUrl,
-            'signInUrl': signInUrl,
-            'onTripUrl': onTripUrl,
-        }, print('Loaded item detail page!'))
     elif(stockType=='surfboard'):
-        #Get surfboard
+        #Get surfboard details
         thisBoard = Surfboard.objects.get(surfboardNumber=number)
-        #Send relevant info to html page
-        brand = thisBoard.brand
-        size = thisBoard.size
-        onTrip = thisBoard.onTrip
-        signedOut = thisBoard.signedOut
-        signedIn = thisBoard.signedIn
-        qrCode = thisBoard.qrCode
         pk = thisBoard.pk
-        deleteUrl = '../deleteItem/'+str(pk)
-        signOutUrl='../signOut/'+str(pk)
-        signInUrl='../signIn/'+str(pk)
-        onTripUrl='../onTrip/'+str(pk)
-        #Load detail page
-        return render(request, 'App/itemDetail.html', {
-            'stockType': stockType,
-            'brand': brand,
-            'size': size,
-            'number': number,
-            'onTrip': onTrip,
-            'signedOut': signedOut,
-            'signedIn': signedIn,
-            'qrCode': 'qrCodes\\'+str(qrCode),
-            'pk': pk,
-            'deleteUrl': deleteUrl,
-            'signOutUrl': signOutUrl,
-            'signInUrl': signInUrl,
-            'onTripUrl': onTripUrl,
-        }, print('Loaded item detail page!'))
+
+    #Get common details
+    item = StockItem.objects.get(pk=pk)
+    brand = item.brand
+    size = item.size
+    onTrip = item.onTrip
+    signedOut = item.signedOut
+    signedIn = item.signedIn
+    qrCode = item.qrCode
+    deleteUrl = '../deleteItem/'+str(pk)
+    signOutUrl='../signOut/'+str(pk)
+    signInUrl='../signIn/'+str(pk)
+    onTripUrl='../onTrip/'+str(pk)
+    #Load detail page
+    return render(request, 'App/itemDetail.html', {
+        'stockType': stockType,
+        'brand': brand,
+        'gender': gender,
+        'size': size,
+        'number': number,
+        'onTrip': onTrip,
+        'signedOut': signedOut,
+        'signedIn': signedIn,
+        'qrCode': 'qrCodes\\'+str(qrCode),
+        'pk': pk,
+        'deleteUrl': deleteUrl,
+        'signOutUrl': signOutUrl,
+        'signInUrl': signInUrl,
+        'onTripUrl': onTripUrl,
+    }, print('Loaded item detail page!'))
 
 def addNewItem(request):
     if(request.method=='POST'):
+        stockType=''
+        brand=''
+        gender=''
+        size=''
+        number=''
         #Check stockType
         if(request.POST.get('stockType')=='Wetsuit'):
-            print(bcolors.OKGREEN+"Attempting to add new wetsuit to db..."+bcolors.ENDC)
             stockType = 'wetsuit'
             gender = request.POST.get('gender')
-            brand = request.POST.get('brand')
-            size = request.POST.get('size')
-            number = checkForMatchingNum(stockType, request.POST.get('num'))
-            print(bcolors.OKBLUE+"Retrieved item info: "+stockType, brand, gender, str(size), str(number)+bcolors.ENDC)
-            
-            #Create a filename for the qr code using data from request
-            fileName=stockType+brand+gender+str(size)+str(number)+'.png'
-            #Check if qr code matchng filename exists
-            if(checkForQR(fileName)):
-                #Load surfboard info page
-                return itemDetail(request, stockType, number)
-            else:
-                #Generate QR code for item
-                generateQRCode(stockType, brand, gender, size, number, fileName)
-                #Create a new item object and add it to db
+        elif(request.POST.get('stockType')=='Surfboard'):
+            stockType = 'surfboard'
+
+        print(bcolors.OKGREEN+"Attempting to add new "+stockType+" to db..."+bcolors.ENDC)
+        brand = request.POST.get('brand')
+        size = request.POST.get('size')
+        number = checkForMatchingNum(stockType, request.POST.get('num'))
+        print(bcolors.OKBLUE+"Retrieved item info: "+stockType, brand, gender, str(size), str(number)+bcolors.ENDC)
+        
+        #Create a filename for the qr code using data from request
+        fileName=stockType+brand+gender+str(size)+str(number)+'.png'
+        #Check if qr code matchng filename exists
+        if(checkForQR(fileName)):
+            #Load surfboard info page
+            return itemDetail(request, stockType, number)
+        else:
+            #Generate QR code for item
+            generateQRCode(stockType, brand, gender, size, number, fileName)
+            #Create a new item object and add it to db
+            if(stockType=='wetsuit'):
                 newWetsuit = Wetsuit()
                 newWetsuit.stockType=stockType
                 newWetsuit.brand=brand
@@ -131,66 +118,32 @@ def addNewItem(request):
                 newWetsuit.size=size
                 newWetsuit.wetsuitNumber=number
                 newWetsuit.qrCode=fileName
-                newWetsuit.url='http://'+IP+':8000/detail/'+stockType+'&'+str(number)
+                newWetsuit.url='http://192.168.0.58:8000/detail/'+stockType+'&'+str(number)
                 newWetsuit.save()
                 return itemDetail(request, stockType, number)
-
-        elif(request.POST.get('stockType')=='Surfboard'):
-            print(bcolors.OKGREEN+'Attempting to add new surfboard to db...'+bcolors.ENDC)
-            #Get all info from request
-            stockType = 'surfboard'
-            brand = request.POST.get('brand')
-            size = request.POST.get('size')
-            number = checkForMatchingNum(stockType, request.POST.get('num'))
-            gender=''
-            print(bcolors.OKBLUE+"Retrieved item info: "+stockType, brand, str(size), str(number)+bcolors.ENDC)
-            #Create a filename for the qr code using data from request
-            fileName=stockType+brand+gender+str(size)+str(number)+'.png'
-            #Check if qr code matchng filename exists
-            if(checkForQR(fileName)):
-                #Load surfboard info page
+            elif(stockType=='surfboard'):
+                newBoard = Surfboard()
+                newBoard.stockType=stockType
+                newBoard.brand=brand
+                newBoard.size=size
+                newBoard.surfboardNumber=number
+                newBoard.qrCode=fileName
+                newBoard.url='http://192.168.0.58:8000/detail/'+stockType+'&'+str(number)
+                newBoard.save()
                 return itemDetail(request, stockType, number)
-            else:
-                #Generate QR code for item
-                generateQRCode(stockType, brand, gender, size, number, fileName)
-                #Create a new item object and add it to db
-                newSurfboard = Surfboard()
-                newSurfboard.stockType=stockType
-                newSurfboard.brand=brand
-                newSurfboard.size=size
-                newSurfboard.surfboardNumber=number
-                newSurfboard.qrCode=fileName
-                newSurfboard.url='http://'+IP+':8000/detail/'+stockType+'&'+str(number)
-                newSurfboard.save()
-                return itemDetail(request, stockType, number)
-    else:
-        return HttpResponse('fail')
 
 def generateQRCode(stockType, brand, gender, size, number, fileName):
-    if(stockType=='wetsuit'):
-        print(bcolors.OKGREEN+"Generating a new wetsuit QR code..."+bcolors.ENDC)
-        #Generate qrcode from data
-        qrData = 'http://'+IP+':8000/wetsuit/'+brand+'&'+gender+'&'+str(size)+'&'+str(number)
-        qr = qrcode.make(qrData)
-        print(bcolors.OKGREEN+"Saving generated QR code..."+bcolors.ENDC)
-        path = 'static\\qrcodes\\'+fileName
-        qr.save(path)
-        if(exists(path)):
-            return print(bcolors.OKBLUE+"Successfully generated and saved QR code!"+bcolors.ENDC)
-        else:
-            return print(bcolors.FAIL+"QR code failed to save!"+bcolors.ENDC)
-    elif(stockType=='surfboard'):
-        print(bcolors.OKGREEN+"Generating a new surfboard QR code..."+bcolors.ENDC)
-        #Generate qrcode from data
-        qrData = 'http://'+IP+':8000/surfboard/'+brand+'&'+str(size)+'&'+str(number)
-        qr = qrcode.make(qrData)
-        print(bcolors.OKGREEN+"Saving generated QR code..."+bcolors.ENDC)
-        path = 'static\\qrcodes\\'+fileName
-        qr.save(path)
-        if(exists(path)):
-            return print(bcolors.OKBLUE+"Successfully generated and saved QR code!"+bcolors.ENDC)
-        else:
-            return print(bcolors.FAIL+"QR code failed to save!"+bcolors.ENDC)
+    print(bcolors.OKGREEN+"Generating a new"+stockType+" QR code..."+bcolors.ENDC)
+    #Generate qrcode from data
+    qrData = 'http://192.168.0.58:8000/'+stockType+'/'+brand+'&'+gender+'&'+str(size)+'&'+str(number)
+    qr = qrcode.make(qrData)
+    print(bcolors.OKGREEN+"Saving generated QR code..."+bcolors.ENDC)
+    path = 'static\\qrcodes\\'+fileName
+    qr.save(path)
+    if(exists(path)):
+        return print(bcolors.OKBLUE+"Successfully generated and saved QR code!"+bcolors.ENDC)
+    else:
+        return print(bcolors.FAIL+"QR code failed to save!"+bcolors.ENDC)
 
 def checkForMatchingNum(stockType, number):
     #Check if item with same item num exists
@@ -217,7 +170,7 @@ def getNextNum(number, stockType):
             num = number + 1
             return getNextNum(num, 'wetsuit')
         except:
-            print(bcolors.FAIL+"NUMBER: "+str(number)+bcolors.ENDC)
+            print(bcolors.OKBLUE+"New number: "+str(number)+bcolors.ENDC)
             return number
     elif(stockType=='surfboard'):
         try:
@@ -253,35 +206,10 @@ def deleteQRCode(fileName):
 
 def deleteItem(request, pk):
     itemToDelete = StockItem.objects.get(pk=pk)
-    if(request.method=='POST'):
-        print(bcolors.OKGREEN+"Getting item info..."+bcolors.ENDC)
-        stockType = itemToDelete.stockType
-        brand = itemToDelete.brand
-        size = itemToDelete.size
-        if(stockType=='wetsuit'):
-            print(bcolors.WARNING+'Deleting QR code...'+bcolors.ENDC)
-            gender = Wetsuit.objects.get(pk=pk).gender
-            wetsuitNumber = Wetsuit.objects.get(pk=pk).wetsuitNumber
-            print(bcolors.OKBLUE+"Obtained item info: "+stockType, brand, gender, str(size), str(wetsuitNumber)+bcolors.ENDC)
-            #Delete associated QR code
-            fileName=stockType+brand+gender+str(size)+str(wetsuitNumber)+'.png'
-            deleteQRCode(fileName)
-        elif(stockType=='surfboard'):
-            print(bcolors.WARNING+'Deleting QR code...'+bcolors.ENDC)
-            gender = Surfboard.objects.get(pk=pk).gender
-            surfboardNumber = Wetsuit.objects.get(pk=pk).surfboardNumber
-            print(bcolors.OKBLUE+"Obtained item info: "+stockType, brand, str(size), str(surfboardNumber)+bcolors.ENDC)
-            #Delete associated QR code
-            fileName=stockType+brand+str(size)+str(surfboardNumber)+'.png'
-            deleteQRCode(fileName)
-        else:
-            print(bcolors.FAIL+'Invalid stocktype!'+bcolors.ENDC)
-
-        #Delete item from db
-        print(bcolors.WARNING+"Deleting item from database..."+bcolors.ENDC)
-        itemToDelete.delete()
-        print(bcolors.OKBLUE+"Successfully deleted item from database!"+bcolors.ENDC)
-        return redirect('/')
+    qrCode = str(itemToDelete.qrCode)
+    deleteQRCode(qrCode)
+    itemToDelete.delete()
+    return redirect('/')
 
 def signOut(request, pk):
     print(bcolors.OKGREEN+"Attempting to sign out item..."+bcolors.ENDC)
