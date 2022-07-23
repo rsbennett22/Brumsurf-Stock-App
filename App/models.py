@@ -45,3 +45,23 @@ class Surfboard(StockItem):
     surfboardNumber = models.PositiveIntegerField(default=0, unique=True)
     def __str__(self):
         return (self.stockType+'_'+self.brand+'_'+self.size+'_'+str(self.surfboardNumber))
+
+class Surfskate(StockItem):
+    surfskateNumber = models.PositiveIntegerField(default=0, unique=True)
+    def __str__(self):
+        return (self.stockType+'_'+self.brand+'_'+str(self.surfskateNumber))
+
+class Boot(StockItem):
+    bootAmount = models.PositiveIntegerField(default=0)
+    def __str__(self):
+        return (self.stockType+'_'+self.brand+'_'+self.size)
+
+class Glove(StockItem):
+    gloveAmount = models.PositiveIntegerField(default=0)
+    def __str__(self):
+        return (self.stockType+'_'+self.brand+'_'+self.size)
+
+class Hood(StockItem):
+    hoodAmount = models.PositiveIntegerField(default=0)
+    def __str__(self):
+        return (self.stockType+'_'+self.brand+'_'+self.size)
