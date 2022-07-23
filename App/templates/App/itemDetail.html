@@ -5,12 +5,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/itemDetail.css' %}">
     <title>Brumsurf Stock App</title>
 </head>
 <body onload="setDefaultsAndReload()">
     <button onclick="location.href='/'">Home</button>
     <h1>{{stockType}}</h1>
     <h2 id="brand" brand="{{brand}}">Brand: {{brand}}</h2>
+    <h2 id="gender" gender="{{gender}}" class="hidden">Gender: {{gender}}</h2>
     <h2 id="size" size="{{size}}">Size: {{size}}</h2>
     <h2 id="number" number="{{number}}">{{stockType}} number: {{number}}</h2>
     <h2 id="status"></h2>
@@ -48,6 +50,10 @@
         }
 
         function setDefaultsAndReload() {
+            if("{{stockType}}"=='wetsuit') {
+                //Unhide gender header
+                document.getElementById('gender').getAttribute('class')='shown'
+            }
 
             //Get status of item, signedIn, signedOut and onTrip and disable/enable buttons accordingly
             var signedIn = "{{signedIn}}";
@@ -63,9 +69,15 @@
                 document.getElementById('onTrip').disabled = true;
                 document.getElementById('signOut').disabled = true;
             }
-            if(window.location.href == 'http://192.168.0.58:8000/addNewSurfboard/') {
-                url = 'http://192.168.0.58:8000/detail/surfboard&'+"{{number}}"
-                window.location.replace(url)
+            if(window.location.href == 'http://192.168.0.58:8000/addNewItem/') {
+                if("{{stockType}}"=='wetsuit') {
+                    url = 'http://192.168.0.58:8000/detail/wetsuit&'+"{{number}}"
+                    window.location.replace(url)
+                }
+                else if("{{stockType}}"=='surfboard') {
+                    url = 'http://192.168.0.58:8000/detail/surfboard&'+"{{number}}"
+                    window.location.replace(url)
+                }
             }
         }
         function showHideSignOutOptions(element) {

@@ -1,9 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/itemDetail.css' %}">
     <title>Brumsurf Stock App</title>
 </head>
 <body onload="setOptions()">
@@ -11,12 +13,17 @@
     <button onclick="location.href='/'">Home</button>
     <br>
     <br>
-    <form id="surfboardForm" action="{% url 'addNewSurfboard' %}" method="POST">
+    <form id="itemForm" action="{% url 'addNewItem' %}" method="POST">
         {% csrf_token %}
-        <input id="itemType" name="itemType" value="{{stockType}}" readonly hidden>
+        <input id="stockType" name="stockType" value="{{stockType}}" readonly hidden>
         Brand: <select id="brand" name="brand" required>
         </select>
         <br>
+        <label for="gender" id="genderLabel" class="hidden">Gender: </label><select id="gender" name="gender" class="hidden" onchange="updateSizeOptions()">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        <br id="break" class="hidden">
         Size: <select id="size" name="size" required>
         </select>
         <br>
@@ -32,7 +39,19 @@
             var brandOptions = document.getElementById('brand');
             var sizeOptions = document.getElementById('size');
             //Check the value of stockType and set options accordingly
-            if("{{stockType}}".toLowerCase()=='surfboard') {
+            if("{{stockType}}".toLowerCase()=='wetsuit'){
+                console.log('Wetsuit form page loaded');
+                document.getElementById('genderLabel').className='shown';
+                document.getElementById('gender').className='shown';
+                document.getElementById('break').className='shown';
+                //Add options to brand
+                createOption(brandOptions, 'oneil');
+                createOption(brandOptions, 'twobarefeet');
+                createOption(brandOptions, 'tiki');
+                //Add options to size
+                updateSizeOptions();
+            }
+            else if("{{stockType}}".toLowerCase()=='surfboard') {
                 console.log('Surfboard form page loaded');
                 //Add options to brand
                 createOption(brandOptions, 'hotsurf');
@@ -50,6 +69,37 @@
             newOption.value = value;
             newOption.innerHTML = value;
             parent.appendChild(newOption);
+        }
+        function updateSizeOptions() {
+            const sizesMale = ['small', 'medium', 'medium-tall', 'large', 'x-large'];
+            const sizesFemale = ['4', '6', '8', '10', '12', '14', '16'];
+            //get the gender select field's selected value
+            var genderField = document.getElementById('gender');
+            var sizeField = document.getElementById('size');
+            var gender = genderField.value;
+            console.log(gender)
+            var optionsTotal = sizeField.length;
+            //check if any options present
+            if(optionsTotal!=0) {
+                //remove options present
+                for(i=0; i<=optionsTotal-1; i++) {
+                    //remove option 0 from select field
+                    sizeField.remove(0);
+                }
+            }
+            //check what gender is selected
+            if(gender=='male') {
+                //add options for male sizes
+                for(i=0; i<=sizesMale.length-1; i++) {
+                    createOption(sizeField, sizesMale[i])
+                }
+            }
+            else {
+                //add options for female sizes
+                for(i=0; i<=sizesFemale.length-1; i++) {
+                    createOption(sizeField, sizesFemale[i])
+                }
+            }
         }
     </script>
 
