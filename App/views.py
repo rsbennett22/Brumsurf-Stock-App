@@ -42,15 +42,20 @@ def itemDetail(request, stockType, number):
     pk = ''
     if(stockType=='wetsuit'):
         #Get wetsuit details
+        print(bcolors.OKGREEN+"Getting "+stockType+" specific details..."+bcolors.ENDC)
         thisWetty = Wetsuit.objects.get(wetsuitNumber=number)
         gender=thisWetty.gender
         pk = thisWetty.pk
+        print(bcolors.OKBLUE+"Retrieved gender: "+gender+" and pk: "+str(pk)+bcolors.ENDC)
     elif(stockType=='surfboard'):
         #Get surfboard details
+        print(bcolors.OKGREEN+"Getting "+stockType+" specific details..."+bcolors.ENDC)
         thisBoard = Surfboard.objects.get(surfboardNumber=number)
         pk = thisBoard.pk
+        print(bcolors.OKBLUE+"Retrieved pk: "+str(pk)+bcolors.ENDC)
 
     #Get common details
+    print(bcolors.OKGREEN+"Getting common item details..."+bcolors.ENDC)
     item = StockItem.objects.get(pk=pk)
     brand = item.brand
     size = item.size
@@ -62,7 +67,10 @@ def itemDetail(request, stockType, number):
     signOutUrl='../signOut/'+str(pk)
     signInUrl='../signIn/'+str(pk)
     onTripUrl='../onTrip/'+str(pk)
+    print(bcolors.OKBLUE+"Brand:"+brand+" Size:"+str(size)+" onTrip:"+str(onTrip)+" signedOut:"+str(signedOut)+" signedIn:"+str(signedIn)
+    +" qrCode:"+str(qrCode)+" deleteUrl:"+deleteUrl+" signedOutUrl:"+signOutUrl+" signInUrl:"+signInUrl+" onTripUrl:"+onTripUrl+bcolors.ENDC)
     #Load detail page
+    print(bcolors.OKGREEN+'Attempting to load details page...'+bcolors.ENDC)
     return render(request, 'App/itemDetail.html', {
         'stockType': stockType,
         'brand': brand,
@@ -78,7 +86,7 @@ def itemDetail(request, stockType, number):
         'signOutUrl': signOutUrl,
         'signInUrl': signInUrl,
         'onTripUrl': onTripUrl,
-    }, print('Loaded item detail page!'))
+    }, print(bcolors.OKBLUE+'Loaded item detail page!'+bcolors.ENDC))
 
 def addNewItem(request):
     if(request.method=='POST'):
@@ -89,10 +97,14 @@ def addNewItem(request):
         number=''
         #Check stockType
         if(request.POST.get('stockType')=='Wetsuit'):
+            print(bcolors.OKGREEN+"Setting wetsuit specific details..."+bcolors.ENDC)
             stockType = 'wetsuit'
             gender = request.POST.get('gender')
+            print(bcolors.OKBLUE+"Successfully set details: stockType: "+stockType+" and gender: "+gender+"!"+bcolors.ENDC)
         elif(request.POST.get('stockType')=='Surfboard'):
+            print(bcolors.OKGREEN+"Setting stocktype to surfboard..."+bcolors.ENDC)
             stockType = 'surfboard'
+            print(bcolors.OKBLUE+"Successfully set stocktype to surfboard!"+bcolors.ENDC)
 
         print(bcolors.OKGREEN+"Attempting to add new "+stockType+" to db..."+bcolors.ENDC)
         brand = request.POST.get('brand')
@@ -111,6 +123,7 @@ def addNewItem(request):
             generateQRCode(stockType, brand, gender, size, number, fileName)
             #Create a new item object and add it to db
             if(stockType=='wetsuit'):
+                print(bcolors.OKGREEN+"Creating a new "+stockType+" instance!"+bcolors.ENDC)
                 newWetsuit = Wetsuit()
                 newWetsuit.stockType=stockType
                 newWetsuit.brand=brand
@@ -120,8 +133,10 @@ def addNewItem(request):
                 newWetsuit.qrCode=fileName
                 newWetsuit.url='http://192.168.0.58:8000/detail/'+stockType+'&'+str(number)
                 newWetsuit.save()
+                print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
                 return itemDetail(request, stockType, number)
             elif(stockType=='surfboard'):
+                print(bcolors.OKGREEN+"Creating a new "+stockType+" instance!"+bcolors.ENDC)
                 newBoard = Surfboard()
                 newBoard.stockType=stockType
                 newBoard.brand=brand
@@ -130,6 +145,7 @@ def addNewItem(request):
                 newBoard.qrCode=fileName
                 newBoard.url='http://192.168.0.58:8000/detail/'+stockType+'&'+str(number)
                 newBoard.save()
+                print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
                 return itemDetail(request, stockType, number)
 
 def generateQRCode(stockType, brand, gender, size, number, fileName):
