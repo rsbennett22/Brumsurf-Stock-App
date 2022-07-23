@@ -36,47 +36,6 @@ def surfboardForm(request):
     stockType='Surfboard'
     return render(request, 'App/generateItemForm.html', {'stockType': stockType},print(bcolors.OKBLUE+"Successfully loaded surfboard form page!"+bcolors.ENDC))
 
-def wetsuit(request, brand, gender, size, wetsuitNumber):
-
-    #REMOVED QR CHECK HERE
-
-    qrPath = 'qrcodes\\'+brand+gender+str(size)+str(wetsuitNumber)+'.png'
-    #Get pk of this wetsuit
-    print(bcolors.OKGREEN+"Trying to get wetsuit object..."+bcolors.ENDC)
-    try:
-        thisWetsuit = Wetsuit.objects.get(brand=brand, gender=gender, size=size, wetsuitNumber=wetsuitNumber)
-        print(bcolors.OKBLUE+"Successfully retrieved wetsuit object!"+bcolors.ENDC)
-    except:
-        print(bcolors.FAIL+"Error! Wetsuit does not exist!"+bcolors.ENDC)
-        return render(request, 'App/qrErrorPage.html')
-
-    pk = thisWetsuit.pk
-    signedOut=thisWetsuit.signedOut
-    signedIn=thisWetsuit.signedIn
-    onTrip=thisWetsuit.onTrip
-    qrPath = 'qrCodes\\'+str(thisWetsuit.qrCode)
-    print(bcolors.OKGREEN+"Loading info page"+bcolors.ENDC)
-    deleteUrl='../deleteItem/'+str(wetsuitNumber)
-    signOutUrl='../signOut/'+str(pk)
-    signInUrl='../signIn/'+str(pk)
-    onTripUrl='../onTrip/'+str(pk)
-    return render(request, 'App/wetsuit.html', {
-        'stockType' : 'wetsuit', 
-        'brand' : brand, 
-        'gender' : gender, 
-        'size' : size, 
-        'wetsuitNumber' : wetsuitNumber, 
-        'signedIn': signedIn,
-        'signedOut': signedOut,
-        'onTrip': onTrip,
-        'qrPath' : qrPath, 
-        'pk' : pk, 
-        'deleteUrl' : deleteUrl, 
-        'signOutUrl': signOutUrl,
-        'signInUrl': signInUrl,
-        'onTripUrl': onTripUrl,
-        }, print(bcolors.OKBLUE+"Successfully loaded wetsuit info page!"+bcolors.ENDC))
-
 def itemDetail(request, stockType, number):
     if(stockType=='wetsuit'):
         #Get wetsuit
