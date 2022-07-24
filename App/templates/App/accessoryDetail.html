@@ -6,6 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/itemDetail.css' %}">
+    <script>
+        pk = "{{pk}}"
+        updateUrl = "{{updateUrl}}"
+    </script>
+    <script src="{% static 'js/accessoryDetail.js' %}"></script>
     <title>Brumsurf Stock App</title>
 </head>
 <body onload="setDefaultsAndReload()">
@@ -26,34 +31,5 @@
         {% csrf_token %}
         <button type="submit">Delete</button>
     </form>
-    <script>
-        function setDefaultsAndReload() {
-            document.getElementById('updateTheAmount').checked=false
-            if(window.location.href == 'http://192.168.0.58:8000/addNewItem/') {
-                if("{{stockType}}"=='boot') {
-                    url = 'http://192.168.0.58:8000/detail/'+"{{pk}}"
-                    window.location.replace(url)
-                }
-            }
-        }
-        function showHideAmountUpdate(element) {
-            amountLabel = document.getElementById('newAmountLabel')
-            amountField = document.getElementById('newAmount')
-            if(element.checked) {
-                amountLabel.className='shown';
-                amountField.className='shown';
-            }
-            else {
-                amountLabel.className='hidden';
-                amountField.className='hidden';
-            }
-        }
-        function setUrl() {
-            updateUrl = "{{updateUrl}}"
-            newAmount = document.getElementById('newAmount').value
-            newUpdateUrl = updateUrl+'&'+newAmount.toString()
-            document.updateAmount.action = newUpdateUrl
-        }
-    </script>
 </body>
 </html>
