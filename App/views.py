@@ -1,3 +1,4 @@
+from distutils.dep_util import newer_pairwise
 from multiprocessing.context import BaseContext
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -105,6 +106,7 @@ def addNewItem(request):
         size = request.POST.get('size')
         if(size==None):
             size=''
+        print(bcolors.FAIL+str(request.POST)+bcolors.ENDC)
         number = checkForMatchingNum(stockType, request.POST.get('num'))
         print(bcolors.OKBLUE+"Retrieved item info: "+stockType, brand, gender, str(size), str(number)+bcolors.ENDC)
         
@@ -209,6 +211,7 @@ def addNewItem(request):
                     newWetsuit.wetsuitNumber=number
                     newWetsuit.qrCode=fileName
                     newWetsuit.url='http://192.168.0.58:8000/detail/'+stockType+'&'+str(number)
+                    print(bcolors.OKBLUE+"New wetsuit info: "+str(newWetsuit)+bcolors.ENDC)
                     newWetsuit.save()
                     print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
                     return itemDetail(request, stockType, number)

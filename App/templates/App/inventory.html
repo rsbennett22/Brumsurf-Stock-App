@@ -67,12 +67,14 @@
     <table>
         <tr>
             <th>Brand</th>
+            <th>Size</th>
             <th>Total</th>
             <th>Url</th>
         </tr>
         {% for boot in boots %}
         <tr>
             <td>{{ boot.brand }}</a></td>
+            <td>{{ boot.size }}</td>
             <td>{{ boot.bootAmount }}</td>
             <td><a href='{{ boot.url }}'>{{ boot.url }}</a></td>
         </tr>
@@ -82,12 +84,14 @@
     <table>
         <tr>
             <th>Brand</th>
+            <th>Size</th>
             <th>Total</th>
             <th>Url</th>
         </tr>
         {% for glove in gloves %}
         <tr>
             <td>{{ glove.brand }}</a></td>
+            <td>{{ glove.size }}</td>
             <td>{{ glove.gloveAmount }}</td>
             <td><a href='{{ glove.url }}'>{{ glove.url }}</a></td>
         </tr>
@@ -97,12 +101,14 @@
     <table>
         <tr>
             <th>Brand</th>
+            <th>Size</th>
             <th>Total</th>
             <th>Url</th>
         </tr>
         {% for hood in hoods %}
         <tr>
             <td>{{ hood.brand }}</a></td>
+            <td>{{ hood.size }}</td>
             <td>{{ hood.hoodAmount }}</td>
             <td><a href='{{ hood.url }}'>{{ hood.url }}</a></td>
         </tr>
