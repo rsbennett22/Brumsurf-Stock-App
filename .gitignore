@@ -129,5 +129,4 @@ dmypy.json
 .pyre/
 
 # Static files
-static/
 qrcodes/
