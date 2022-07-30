@@ -37,7 +37,8 @@ def inventory(request):
     boots = Boot.objects.all().order_by('bootAmount')
     gloves = Glove.objects.all().order_by('gloveAmount')
     hoods = Hood.objects.all().order_by('hoodAmount')
-    return render(request, 'App/inventory.html', {'wetsuits' : wetsuits, 'surfboards': surfboards, 'surfskates': surfskates, 'boots': boots, 'gloves': gloves, 'hoods': hoods})
+    stock = StockItem.objects.all()
+    return render(request, 'App/inventory.html', {'wetsuits' : wetsuits, 'surfboards': surfboards, 'surfskates': surfskates, 'boots': boots, 'gloves': gloves, 'hoods': hoods, 'stock': stock})
 
 def stockForms(request):
     print(bcolors.OKBLUE+"Successfully loaded stock form selection page!"+bcolors.ENDC)
@@ -133,7 +134,7 @@ def addNewItem(request):
                     #Get newboot pk
                     bootMade = Boot.objects.get(brand=brand, size=size)
                     pk = bootMade.pk
-                    bootMade.url = 'http://192.168.0.58:8000/detail/'+str(pk)
+                    bootMade.url = 'http://192.168.0.72:8000/detail/'+str(pk)
                     bootMade.save()
                     #Load accessory details page
                     return accessoryDetail(request, pk)
@@ -159,7 +160,7 @@ def addNewItem(request):
                     #Get newboot pk
                     gloveMade = Glove.objects.get(brand=brand, size=size)
                     pk = gloveMade.pk
-                    gloveMade.url = 'http://192.168.0.58:8000/detail/'+str(pk)
+                    gloveMade.url = 'http://192.168.0.72:8000/detail/'+str(pk)
                     gloveMade.save()
                     #Load accessory details page
                     return accessoryDetail(request, pk)
@@ -185,7 +186,7 @@ def addNewItem(request):
                     #Get newboot pk
                     hoodMade = Hood.objects.get(brand=brand, size=size)
                     pk = hoodMade.pk
-                    hoodMade.url = 'http://192.168.0.58:8000/detail/'+str(pk)
+                    hoodMade.url = 'http://192.168.0.72:8000/detail/'+str(pk)
                     hoodMade.save()
                     #Load accessory details page
                     return accessoryDetail(request, pk)
@@ -210,7 +211,7 @@ def addNewItem(request):
                     newWetsuit.size=size
                     newWetsuit.wetsuitNumber=number
                     newWetsuit.qrCode=fileName
-                    newWetsuit.url='http://192.168.0.58:8000/detail/'+stockType+'&'+str(number)
+                    newWetsuit.url='http://192.168.0.72:8000/detail/'+stockType+'&'+str(number)
                     print(bcolors.OKBLUE+"New wetsuit info: "+str(newWetsuit)+bcolors.ENDC)
                     newWetsuit.save()
                     print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
@@ -223,7 +224,7 @@ def addNewItem(request):
                     newBoard.size=size
                     newBoard.surfboardNumber=number
                     newBoard.qrCode=fileName
-                    newBoard.url='http://192.168.0.58:8000/detail/'+stockType+'&'+str(number)
+                    newBoard.url='http://192.168.0.72:8000/detail/'+stockType+'&'+str(number)
                     newBoard.save()
                     print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
                     return itemDetail(request, stockType, number)
@@ -235,7 +236,7 @@ def addNewItem(request):
                     newBoard.size=size
                     newBoard.surfskateNumber=number
                     newBoard.qrCode=fileName
-                    newBoard.url='http://192.168.0.58:8000/detail/'+stockType+'&'+str(number)
+                    newBoard.url='http://192.168.0.72:8000/detail/'+stockType+'&'+str(number)
                     newBoard.save()
                     print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
                     return itemDetail(request, stockType, number)
@@ -289,7 +290,7 @@ def itemDetail(request, stockType, number):
         'onTrip': onTrip,
         'signedOut': signedOut,
         'signedIn': signedIn,
-        'qrCode': 'qrCodes\\'+str(qrCode),
+        'qrCode': 'qrcodes/'+str(qrCode),
         'pk': pk,
         'deleteUrl': deleteUrl,
         'signOutUrl': signOutUrl,
@@ -320,10 +321,10 @@ def accessoryDetail(request, pk):
 def generateQRCode(stockType, brand, gender, size, number, fileName):
     print(bcolors.OKGREEN+"Generating a new"+stockType+" QR code..."+bcolors.ENDC)
     #Generate qrcode from data
-    qrData = 'http://192.168.0.58:8000/'+stockType+'/'+brand+'&'+gender+'&'+str(size)+'&'+str(number)
+    qrData = 'http://192.168.0.72:8000/'+stockType+'/'+brand+'&'+gender+'&'+str(size)+'&'+str(number)
     qr = qrcode.make(qrData)
     print(bcolors.OKGREEN+"Saving generated QR code..."+bcolors.ENDC)
-    path = 'static\\qrcodes\\'+fileName
+    path = 'static/qrcodes/'+fileName
     qr.save(path)
     if(exists(path)):
         return print(bcolors.OKBLUE+"Successfully generated and saved QR code!"+bcolors.ENDC)
@@ -381,7 +382,7 @@ def getNextNum(number, stockType):
             return number
 
 def checkForQR(fileName):
-    path = 'static\\qrcodes\\'+fileName
+    path = 'static/qrcodes/'+fileName
     print(path)
     if(exists(path)):
         print(bcolors.OKBLUE+"QR code already exists!"+bcolors.ENDC)
@@ -403,7 +404,7 @@ def deleteItem(request, pk):
         return redirect('/')
 
 def deleteQRCode(fileName):
-    path='static\\qrcodes\\'+fileName
+    path='static/qrcodes/'+fileName
     print(bcolors.OKGREEN+"Checking if file to be deleted exists..."+bcolors.ENDC)
     if(exists(path)):
         #Delete file

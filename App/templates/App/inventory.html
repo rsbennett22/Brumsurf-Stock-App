@@ -6,6 +6,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
+    <script>
+        var wetsuit = [];
+        {% for wet in wetsuits %}
+            wetsuit.push({
+            "brand": "{{ wet.brand }}",
+            "gender": "{{ wet.gender }}",
+            "size": "{{ wet.size }}",
+            "onTrip": "{{ wet.onTrip }}",
+            "signedOut": "{{ wet.signedOut }}",
+            "signedIn": "{{ wet.signedIn }}",
+            "name": "{{ wet.name }}",
+            "studentId": "{{ wet.studentId }}",
+            "number": "{{ wet.wetsuitNumber }}"
+        })
+        {% endfor %}
+        var stock = "{{stock}}";
+        var surfboards = "{{surfboards}}";
+        var surfskates = "{{surfskates}}";
+        var boots = "{{boots}}";
+        var gloves = "{{gloves}}";
+        var hoods = "{{hoods}}";
+    </script>
+    <script src="{% static 'js/inventory.js' %}"></script>
     <title>Brumsurf Stock App</title>
 </head>
 <body>
@@ -114,5 +137,7 @@
         </tr>
         {% endfor %}
     </table>
+    <br>
+    <button id='csv' name='csv' onclick="saveCSV()">Save CSV File</button>
 </body>
 </html>
