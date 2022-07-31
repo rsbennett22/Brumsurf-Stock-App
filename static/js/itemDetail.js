@@ -22,13 +22,13 @@ function setDefaultsAndReload() {
         document.getElementById('onTrip').disabled = true;
         document.getElementById('signOut').disabled = true;
     }
-    if(window.location.href == 'http://192.168.0.58:8000/addNewItem/') {
-        if("{{stockType}}"=='wetsuit') {
-            url = 'http://192.168.0.58:8000/detail/wetsuit&'+number
-            window.location.replace(url)
+    if(window.location.href == 'http://192.168.0.72:8000/addNewItem/') {
+        if(stockType=='wetsuit') {
+            url = 'http://192.168.0.72:8000/detail/wetsuit&'+number;
+            window.location.replace(url);
         }
-        else if("{{stockType}}"=='surfboard') {
-            url = 'http://192.168.0.58:8000/detail/surfboard&'+number
+        else if(stockType=='surfboard') {
+            url = 'http://192.168.0.72:8000/detail/surfboard&'+number
             window.location.replace(url)
         }
     }

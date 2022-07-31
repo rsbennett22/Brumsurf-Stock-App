@@ -24,9 +24,9 @@ function setOptions() {
         createOption(brandOptions, 'surfworx');
         //...//
         //Add options to size
-        createOption(sizeOptions, "6'0");
-        createOption(sizeOptions, "7'0");
-        createOption(sizeOptions, "8'0");
+        createOption(sizeOptions, "6ft");
+        createOption(sizeOptions, "7ft");
+        createOption(sizeOptions, "8ft");
     }
     else if(stockType.toLowerCase()=='surfskate') {
         console.log('Surfboard form page loaded');

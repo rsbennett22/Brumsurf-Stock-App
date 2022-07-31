@@ -6,6 +6,72 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
+    <script>
+        var wetsuitArray = [];
+        {% for wet in wetsuits %}
+            wetsuitArray.push({
+            "brand": "{{ wet.brand }}",
+            "gender": "{{ wet.gender }}",
+            "size": "{{ wet.size }}",
+            "onTrip": "{{ wet.onTrip }}",
+            "signedOut": "{{ wet.signedOut }}",
+            "signedIn": "{{ wet.signedIn }}",
+            "name": "{{ wet.name }}",
+            "studentId": "{{ wet.studentId }}",
+            "wetsuitNumber": "{{ wet.wetsuitNumber }}"
+        })
+        {% endfor %}
+        var surfboardArray = [];
+        {% for surf in surfboards %}
+            surfboardArray.push({
+            "brand": "{{ surf.brand }}",
+            "size": "{{ surf.size }}",
+            "onTrip": "{{ surf.onTrip }}",
+            "signedOut": "{{ surf.signedOut }}",
+            "signedIn": "{{ surf.signedIn }}",
+            "name": "{{ surf.name }}",
+            "studentId": "{{ surf.studentId }}",
+            "surfboardNumber": "{{ surf.surfboardNumber }}"
+        })
+        {% endfor %}
+        var surfskateArray = [];
+        {% for surf in surfskates %}
+            surfskateArray.push({
+            "brand": "{{ surf.brand }}",
+            "onTrip": "{{ surf.onTrip }}",
+            "signedOut": "{{ surf.signedOut }}",
+            "signedIn": "{{ surf.signedIn }}",
+            "name": "{{ surf.name }}",
+            "studentId": "{{ surf.studentId }}",
+            "surfskateNumber": "{{ surf.surfskateNumber }}"
+        })
+        {% endfor %}
+        var bootArray = [];
+        {% for boot in boots %}
+            bootArray.push({
+            "brand": "{{ boot.brand }}",
+            "size": "{{ boot.size }}",
+            "bootAmount": "{{ boot.bootAmount }}"
+        })
+        {% endfor %}
+        var gloveArray = [];
+        {% for glove in gloves %}
+            gloveArray.push({
+            "brand": "{{ glove.brand }}",
+            "size": "{{ glove.size }}",
+            "gloveAmount": "{{ glove.gloveAmount }}"
+        })
+        {% endfor %}
+        var hoodArray = [];
+        {% for hood in hoods %}
+            hoodArray.push({
+            "brand": "{{ hood.brand }}",
+            "size": "{{ hood.size }}",
+            "hoodAmount": "{{ hood.hoodAmount }}"
+        })
+        {% endfor %}
+    </script>
+    <script src="{% static 'js/inventory.js' %}"></script>
     <title>Brumsurf Stock App</title>
 </head>
 <body>
@@ -114,5 +180,7 @@
         </tr>
         {% endfor %}
     </table>
+    <br>
+    <button id='csv' name='csv' onclick="saveCSV()">Save CSV File</button>
 </body>
 </html>
