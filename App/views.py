@@ -37,8 +37,7 @@ def inventory(request):
     boots = Boot.objects.all().order_by('bootAmount')
     gloves = Glove.objects.all().order_by('gloveAmount')
     hoods = Hood.objects.all().order_by('hoodAmount')
-    stock = StockItem.objects.all()
-    return render(request, 'App/inventory.html', {'wetsuits' : wetsuits, 'surfboards': surfboards, 'surfskates': surfskates, 'boots': boots, 'gloves': gloves, 'hoods': hoods, 'stock': stock})
+    return render(request, 'App/inventory.html', {'wetsuits' : wetsuits, 'surfboards': surfboards, 'surfskates': surfskates, 'boots': boots, 'gloves': gloves, 'hoods': hoods})
 
 def stockForms(request):
     print(bcolors.OKBLUE+"Successfully loaded stock form selection page!"+bcolors.ENDC)
