@@ -1,11 +1,12 @@
 function saveCSV() {
 	//Get all item info
-	console.log(wetsuitArray);
+	/*console.log(wetsuitArray);
 	console.log(surfboardArray);
 	console.log(surfskateArray);
 	console.log(bootArray);
 	console.log(gloveArray);
 	console.log(hoodArray);
+	*/
 
 	//Format data into CSV format
 	fmtd_Wetsuits = format(wetsuitArray, 'wetsuit');
@@ -14,20 +15,20 @@ function saveCSV() {
 	fmtd_Boots = format(bootArray, 'boots');
 	fmtd_Gloves = format(gloveArray, 'gloves');
 	fmtd_Hoods = format(hoodArray, 'hoods');
+	/*
 	console.log(fmtd_Wetsuits);
 	console.log(fmtd_Surfboards);
 	console.log(fmtd_Surfskates);
 	console.log(fmtd_Boots);
 	console.log(fmtd_Gloves);
 	console.log(fmtd_Hoods);
-
+	*/
 	//Collate all data
 	csvData = combine(fmtd_Wetsuits, fmtd_Surfboards, fmtd_Surfskates, fmtd_Boots, fmtd_Gloves, fmtd_Hoods);
-	console.log(csvData);
+	//console.log(csvData);
 
 	//Export data as a file
 	csvContent = "data:text/csv;charset=utf-8," + csvData;
-	console.log(csvContent);
 	var encodedUri = encodeURI(csvContent);
 	var link = document.createElement("a");
 	link.setAttribute("href", encodedUri);
