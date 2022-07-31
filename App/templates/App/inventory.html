@@ -75,112 +75,141 @@
     <title>Brumsurf Stock App</title>
 </head>
 <body>
-    <h1>Inventory</h1>
-    <button onclick="location.href='/'">Home</button>
-    <br><br>
-    <h2>Wetsuits</h2>
-    <table>
-        <tr>
-            <th>Brand</th>
-            <th>Gender</th>
-            <th>Size</th>
-            <th>Number</th>
-            <th>Url</th>
-        </tr>
-        {% for wetty in wetsuits %}
-        <tr>
-            <td>{{ wetty.brand }}</a></td>
-            <td>{{ wetty.gender }}</a></td>
-            <td>{{ wetty.size }}</a></td>
-            <td>{{ wetty.wetsuitNumber }}</td>
-            <td><a href='{{ wetty.url }}'>{{ wetty.url }}</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-    <h2>Surfboards</h2>
-    <table>
-        <tr>
-            <th>Brand</th>
-            <th>Size</th>
-            <th>Number</th>
-            <th>Url</th>
-        </tr>
-        {% for surf in surfboards %}
-        <tr>
-            <td>{{ surf.brand }}</a></td>
-            <td>{{ surf.size }}</a></td>
-            <td>{{ surf.surfboardNumber }}</td>
-            <td><a href='{{ surf.url }}'>{{ surf.url }}</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-    <h2>Surfskates</h2>
-    <table>
-        <tr>
-            <th>Brand</th>
-            <th>Number</th>
-            <th>Url</th>
-        </tr>
-        {% for skate in surfskates %}
-        <tr>
-            <td>{{ skate.brand }}</a></td>
-            <td>{{ skate.surfskateNumber }}</td>
-            <td><a href='{{ skate.url }}'>{{ skate.url }}</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-    <h2>Boots</h2>
-    <table>
-        <tr>
-            <th>Brand</th>
-            <th>Size</th>
-            <th>Total</th>
-            <th>Url</th>
-        </tr>
-        {% for boot in boots %}
-        <tr>
-            <td>{{ boot.brand }}</a></td>
-            <td>{{ boot.size }}</td>
-            <td>{{ boot.bootAmount }}</td>
-            <td><a href='{{ boot.url }}'>{{ boot.url }}</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-    <h2>Gloves</h2>
-    <table>
-        <tr>
-            <th>Brand</th>
-            <th>Size</th>
-            <th>Total</th>
-            <th>Url</th>
-        </tr>
-        {% for glove in gloves %}
-        <tr>
-            <td>{{ glove.brand }}</a></td>
-            <td>{{ glove.size }}</td>
-            <td>{{ glove.gloveAmount }}</td>
-            <td><a href='{{ glove.url }}'>{{ glove.url }}</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-    <h2>Hoods</h2>
-    <table>
-        <tr>
-            <th>Brand</th>
-            <th>Size</th>
-            <th>Total</th>
-            <th>Url</th>
-        </tr>
-        {% for hood in hoods %}
-        <tr>
-            <td>{{ hood.brand }}</a></td>
-            <td>{{ hood.size }}</td>
-            <td>{{ hood.hoodAmount }}</td>
-            <td><a href='{{ hood.url }}'>{{ hood.url }}</a></td>
-        </tr>
-        {% endfor %}
-    </table>
-    <br>
-    <button id='csv' name='csv' onclick="saveCSV()">Save CSV File</button>
+    <h1><a href='/'>Brumsurf Stock App</a></h1>
+    <div id='orange'>
+        <div id='content'>
+            <h3>Wetsuits</h3>
+            <table>
+                <tr>
+                    <th>Brand</th>
+                    <th>Gender</th>
+                    <th>Size</th>
+                    <th>Number</th>
+                </tr>
+                {% for wetty in wetsuits %}
+                <tr>
+                    <td><a href='{{ wetty.url }}'>{{ wetty.brand }}</a></td>
+                    <td><a href='{{ wetty.url }}'>{{ wetty.gender }}</a></td>
+                    <td><a href='{{ wetty.url }}'>{{ wetty.size }}</a></td>
+                    <td><a href='{{ wetty.url }}'>{{ wetty.wetsuitNumber }}</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+            <br><br>
+        </div>
+    </div>
+    <div id='blue'>
+        <div id='content'>
+            <h3>Surfboards</h3>
+            <table>
+                <tr>
+                    <th>Brand</th>
+                    <th>Size</th>
+                    <th>Number</th>
+                    <th>Url</th>
+                </tr>
+                {% for surf in surfboards %}
+                <tr>
+                    <td>{{ surf.brand }}</a></td>
+                    <td>{{ surf.size }}</a></td>
+                    <td>{{ surf.surfboardNumber }}</td>
+                    <td><a href='{{ surf.url }}'>surfboard{{surf.surfboardNumber}}</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+            <br><br>
+        </div>
+    </div>
+    <div id='orange'>
+        <div id='content'>
+            <h3>Surfskates</h3>
+            <table>
+                <tr>
+                    <th>Brand</th>
+                    <th>Number</th>
+                    <th>Url</th>
+                </tr>
+                {% for skate in surfskates %}
+                <tr>
+                    <td>{{ skate.brand }}</a></td>
+                    <td>{{ skate.surfskateNumber }}</td>
+                    <td><a href='{{ skate.url }}'>surfskate{{skate.surfskateNumber}}</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+            <br><br>
+        </div>
+    </div>
+    <div id='blue'>
+        <div id='content'>
+            <h3>Boots</h3>
+            <table>
+                <tr>
+                    <th>Brand</th>
+                    <th>Size</th>
+                    <th>Total</th>
+                    <th>Url</th>
+                </tr>
+                {% for boot in boots %}
+                <tr>
+                    <td>{{ boot.brand }}</a></td>
+                    <td>{{ boot.size }}</td>
+                    <td>{{ boot.bootAmount }}</td>
+                    <td><a href='{{ boot.url }}'>{{boot.brand}}{{boot.size}}</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+            <br><br>
+        </div>
+    </div>
+    <div id='orange'>
+        <div id='content'>
+            <h3>Gloves</h3>
+            <table>
+                <tr>
+                    <th>Brand</th>
+                    <th>Size</th>
+                    <th>Total</th>
+                    <th>Url</th>
+                </tr>
+                {% for glove in gloves %}
+                <tr>
+                    <td>{{ glove.brand }}</a></td>
+                    <td>{{ glove.size }}</td>
+                    <td>{{ glove.gloveAmount }}</td>
+                    <td><a href='{{ glove.url }}'>{{glove.brand}}{{glove.size}}</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+            <br><br>
+        </div>
+    </div>
+    <div id='blue'>
+        <div id='content'>
+            <h3>Hoods</h3>
+            <table>
+                <tr>
+                    <th>Brand</th>
+                    <th>Size</th>
+                    <th>Total</th>
+                    <th>Url</th>
+                </tr>
+                {% for hood in hoods %}
+                <tr>
+                    <td>{{ hood.brand }}</a></td>
+                    <td>{{ hood.size }}</td>
+                    <td>{{ hood.hoodAmount }}</td>
+                    <td><a href='{{ hood.url }}'>{{hood.brand}}{{hood.size}}</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+            <br><br>
+        </div>
+    </div>
+    <div id='csv' onclick="saveCSV()">
+        <div id='content'>
+            <p>Export CSV</p>
+        </div>
+    </div>
 </body>
 </html>

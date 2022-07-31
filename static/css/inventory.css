@@ -1,11 +1,54 @@
+* {
+    font-family: "Monaco", monospace;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+}
 table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
+    margin: auto;
 }
 th {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 td {
-    text-align: center;
+    text-decoration: underline;
+}
+button {
+    border-radius: 15px;
+    background-color: white;
+    width: auto;
+    min-width: 150px;
+    height: auto;
+    min-height: 30px;
+    border: solid white;
+    color: black;
+}
+#orange {
+    width: 100%;
+    height: auto;
+    border-radius: 30px;
+    background-color: rgba(255,117,0,0.7);
+    margin: auto;
+}
+#blue {
+    width: 100%;
+    height: auto;
+    border-radius: 30px;
+    background-color: rgba(0, 133, 255, 0.7);
+    margin: auto;
+}
+#csv {
+    background-color: rgba(184, 194, 203, 0.7);
+    border-radius: 30px;
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+#csv:hover {
+    background-color: rgba(125, 132, 138, 0.7);
+}
+#content {
+    padding-top: 5px;
 }

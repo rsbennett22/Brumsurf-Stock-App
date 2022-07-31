@@ -5,13 +5,36 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <title>Brumsurf Stock App</title>
 </head>
 <body>
-    <h1>Brumsurf Stock App</h1>
-    <br>
-    <button id="stockFormsPage" onclick="location.href={% url 'stockFormsPage' %}">Stock Forms Page</button>
-    <br><br>
-    <button id="inventory" onclick="location.href={% url 'inventory' %}">Inventory</button>
+    <h1><a href='/'>Brumsurf Stock App</a></h1>
+    <div id='stockFormsDiv' onclick="location.href={% url 'stockFormsPage' %}">
+        <div id='content'>
+            <br>
+            <p>
+                Add new items to the database using one of the stock forms
+            </p>
+            <br>
+            <button id="stockFormsPage" onclick="location.href={% url 'stockFormsPage' %}">
+                Stock Forms
+            </button>
+            <br>
+        </div>
+    </div>
+    <div id='inventoryDiv' onclick="location.href={% url 'inventory' %}">
+        <div id='content'>
+            <br>
+            <p>
+                View all the stock currently in the database, get a more detailed view of a specific item or export to a CSV file
+            </p>
+            <br>
+            <button id="inventory" onclick="location.href={% url 'inventory' %}">
+                Inventory
+            </button>
+            <br>
+        </div>
+    </div>
 </body>
 </html>

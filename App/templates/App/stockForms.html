@@ -5,17 +5,33 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/stockForms.css' %}">
     <title>Brumsurf Stock App</title>
 </head>
 <body>
-    <h1>Stock QR Forms</h1>
-    <button onclick="location.href='/'">Home</button>
-    <br><br>
-    <button id="wetsuitForm" onclick="location.href={% url 'wetsuitFormPage' %}">Wetsuits</button>
-    <button id="surfboardForm" onclick="location.href={% url 'surfboardFormPage' %}">Surfboards</button>
-    <button id="surfskateForm" onclick="location.href={% url 'surfskateFormPage' %}">Surfskates</button>
-    <button id="bootForm" onclick="location.href={% url 'bootFormPage' %}">Boots</button>
-    <button id="gloveForm" onclick="location.href={% url 'gloveFormPage' %}">Gloves</button>
-    <button id="hoodForm" onclick="location.href={% url 'hoodFormPage' %}">Hoods</button>
+    <h1><a href='/'>Brumsurf Stock App</a></h1>
+    <button id="wetsuitForm" onclick="location.href={% url 'wetsuitFormPage' %}">
+        Wetsuit Form
+    </button>
+    <br>
+    <button id="surfboardForm" onclick="location.href={% url 'surfboardFormPage' %}">
+        Surfboard Form
+    </button>
+    <br>
+    <button id="surfskateForm" onclick="location.href={% url 'surfskateFormPage' %}">
+        Surfskate Form
+    </button>
+    <br>
+    <button id="bootForm" onclick="location.href={% url 'bootFormPage' %}">
+        Boots Form
+    </button>
+    <br>
+    <button id="gloveForm" onclick="location.href={% url 'gloveFormPage' %}">
+        Gloves Form
+    </button>
+    <br>
+    <button id="hoodForm" onclick="location.href={% url 'hoodFormPage' %}">
+        Hoods Form
+    </button>
 </body>
 </html>

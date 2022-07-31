@@ -13,27 +13,38 @@
     <title>Brumsurf Stock App</title>
 </head>
 <body onload="setOptions()">
-    <h1>{{stockType}} Form</h1>
-    <button onclick="location.href='/'">Home</button>
-    <br>
-    <br>
+    <h1><a href='/'>Brumsurf Stock App</a></h1>
+    <h3>{{stockType}} Form</h3>
     <form id="itemForm" action="{% url 'addNewItem' %}" method="POST">
         {% csrf_token %}
         <input id="stockType" name="stockType" value="{{stockType}}" readonly hidden>
-        Brand: <select id="brand" name="brand" required>
-        </select>
+        <label>
+            Brand: 
+        </label>
+        <select id="brand" name="brand" required></select>
         <br>
-        <label for="gender" id="genderLabel" class="hidden">Gender: </label><select id="gender" name="gender" class="hidden" onchange="updateSizeOptions()">
+        <label for="gender" id="genderLabel" class="hidden">
+            Gender: 
+        </label>
+        <select id="gender" name="gender" class="hidden" onchange="updateSizeOptions()">
             <option value="male">Male</option>
             <option value="female">Female</option>
         </select>
         <br id="gBreak" class="hidden">
-        <label for="size" id="sizeLabel">Size: </label><select id="size" name="size">
-        </select>
+        <label for="size" id="sizeLabel">
+            Size: 
+        </label>
+        <select id="size" name="size"></select>
         <br id="sBreak">
-        <label for="itemNum" id="numLabel">Number: </label><input type="number" id="num" name="num" min="1">
-        <label for="amount" id="amountLabel" class="hidden">Amount: </label><input type="number" id="amount" name="amount" min="1" class="hidden">
-        <br>
+        <label for="itemNum" id="numLabel">
+            Number: 
+        </label>
+        <input type="number" id="num" name="num" min="1">
+        <label for="amount" id="amountLabel" class="hidden">
+            Amount: 
+        </label>
+        <input type="number" id="amount" name="amount" min="1" class="hidden">
+        <br><br>
         <input type="submit" value="Submit">
     </form>
 </body>

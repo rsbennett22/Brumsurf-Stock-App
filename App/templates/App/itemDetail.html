@@ -19,11 +19,11 @@
 <body onload="setDefaultsAndReload()">
     <button onclick="location.href='/'">Home</button>
     <h1>{{stockType}}</h1>
-    <h2 id="brand" brand="{{brand}}">Brand: {{brand}}</h2>
-    <h2 id="gender" gender="{{gender}}" class="hidden">Gender: {{gender}}</h2>
-    <h2 id="size" size="{{size}}">Size: {{size}}</h2>
-    <h2 id="number" number="{{number}}">{{stockType}} number: {{number}}</h2>
-    <h2 id="status"></h2>
+    <h3 id="brand" brand="{{brand}}">Brand: {{brand}}</h3>
+    <h3 id="gender" gender="{{gender}}" class="hidden">Gender: {{gender}}</h3>
+    <h3 id="size" size="{{size}}">Size: {{size}}</h3>
+    <h3 id="number" number="{{number}}">{{stockType}} number: {{number}}</h3>
+    <h3 id="status"></h3>
     <img src="{% static qrCode %}" alt="Item url">
     <br>
     <form onsubmit="return confirm('Sign in {{stockType}} {{number}}?')" action="{{signInUrl}}" method="POST">
