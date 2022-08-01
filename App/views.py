@@ -320,7 +320,7 @@ def accessoryDetail(request, pk):
 def generateQRCode(stockType, brand, gender, size, number, fileName):
     print(bcolors.OKGREEN+"Generating a new"+stockType+" QR code..."+bcolors.ENDC)
     #Generate qrcode from data
-    qrData = 'http://192.168.0.75:8000/'+stockType+'/'+brand+'&'+gender+'&'+str(size)+'&'+str(number)
+    qrData = 'http://192.168.0.75:8000/detail/'+stockType+'&'+str(number)
     qr = qrcode.make(qrData)
     print(bcolors.OKGREEN+"Saving generated QR code..."+bcolors.ENDC)
     path = 'static/qrcodes/'+fileName
