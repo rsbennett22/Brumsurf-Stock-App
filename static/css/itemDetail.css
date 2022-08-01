@@ -1,9 +1,74 @@
 * {
     font-family: "Monaco", monospace;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    text-transform: capitalize;
+}
+button {
+    border-radius: 15px;
+    background-color: white;
+    width: auto;
+    min-width: 200px;
+    height: auto;
+    min-height: 30px;
+    border: none;
+    color: black;
+    padding: 5px;
+    margin: 5px;
+}
+button:hover {
+    background-color: rgba(125, 132, 138, 0.7);
+}
+input[type=text] {
+    border: solid black 1px;
+}
+img {
+    padding-top: 10px;
+    width: 300px;
+    height: 300px;
+}
+input[type='text'] {
+    border-radius: 15px;
+    background-color: white;
+    width: auto;
+    min-width: 150px;
+    height: 30px;
+    border: solid white;
+    color: black;
+    cursor: pointer;
+}
+input[type='number'] {
+    border-radius: 15px;
+    background-color: white;
+    width: auto;
+    min-width: 150px;
+    height: 30px;
+    border: solid white;
+    color: black;
+    cursor: pointer;
+}
+input {
+    max-width: 100px;
+}
+input[type=number] {
+    height: 20px;
+}
+input[type=text] {
+    height: 20px;
+}
+select:hover{
+    background-color: rgba(125, 132, 138, 0.7);
+}
+#container {
+    background-color: lightgray;
+    border-radius: 30px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 .hidden {
     display: none;
 }
 .shown {
-    display: block;
+    display: inline;
 }

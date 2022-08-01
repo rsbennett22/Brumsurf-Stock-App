@@ -37,20 +37,32 @@ function showHideSignOutOptions(element) {
     nameField = document.getElementById('studentName');
     nameLabel = document.getElementById('nameLabel');
     idField = document.getElementById('studentId');
-    idLabel = document.getElementById('idLabel')
+    idLabel = document.getElementById('idLabel');
+    nameBreak = document.getElementById('nameBreak');
+    checkBreak = document.getElementById('checkBreak');
+    signoutBreak = document.getElementById('signoutBreak');
+    fieldSplit = document.getElementById('fieldSplit');
     if(element.checked) {
         //Show input fields for name and id
-        nameField.style.display = 'block';
-        nameLabel.style.display = 'block';
-        idField.style.display = 'block';
-        idLabel.style.display = 'block';
+        nameField.className='shown';
+        nameLabel.className='shown';
+        idField.className='shown';
+        idLabel.className='shown';
+        nameBreak.className='shown';
+        checkBreak.className='shown';
+        signoutBreak.className='shown';
+        fieldSplit.className='shown';
     }
     else {
         //Hide elements
-        nameField.style.display = 'none';
-        nameLabel.style.display = 'none';
-        idField.style.display = 'none';
-        idLabel.style.display = 'none';
+        nameField.className='hidden';
+        nameLabel.className='hidden';
+        idField.className='hidden';
+        idLabel.className='hidden';
+        nameBreak.className='hidden';
+        checkBreak.className='hidden';
+        signoutBreak.className='hidden';
+        fieldSplit.className='hidden';
         //Clear fields
         nameField.value=''
         idField.value=''

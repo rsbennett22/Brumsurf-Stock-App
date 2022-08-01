@@ -15,15 +15,16 @@ select, input {
     background-color: lightgray;
     width: auto;
     min-width: 150px;
-    height: auto;
-    min-height: 30px;
+    height: 30px;
     border: solid white;
     color: black;
     cursor: pointer;
 }
 input {
-    min-height: 25px;
     max-width: 100px;
+}
+input[type=number] {
+    height: 20px;
 }
 select:hover{
     background-color: rgba(125, 132, 138, 0.7);

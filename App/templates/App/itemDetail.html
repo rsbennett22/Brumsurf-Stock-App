@@ -17,39 +17,53 @@
     <title>Brumsurf Stock App</title>
 </head>
 <body onload="setDefaultsAndReload()">
-    <button onclick="location.href='/'">Home</button>
-    <h1>{{stockType}}</h1>
-    <h3 id="brand" brand="{{brand}}">Brand: {{brand}}</h3>
-    <h3 id="gender" gender="{{gender}}" class="hidden">Gender: {{gender}}</h3>
-    <h3 id="size" size="{{size}}">Size: {{size}}</h3>
-    <h3 id="number" number="{{number}}">{{stockType}} number: {{number}}</h3>
-    <h3 id="status"></h3>
-    <img src="{% static qrCode %}" alt="Item url">
-    <br>
-    <form onsubmit="return confirm('Sign in {{stockType}} {{number}}?')" action="{{signInUrl}}" method="POST">
-        {% csrf_token %}
-        <input id="signInUrl" name="url" value="" hidden>
-        <button id="signIn" onclick="setCurrentUrl('signInUrl')" type="submit">Sign In</button>
-    </form>
-    <form onsubmit="return confirm('Sign out {{stockType}} {{number}}?')" action="{{signOutUrl}}" method="POST">
-        {% csrf_token %}
-        Student Sign Out: <input type="checkbox" onchange="showHideSignOutOptions(this)">
-        <label for="studentName" id="nameLabel" style="display: none;">Name: </label>
-        <input type="text" id="studentName" name="studentName" maxlength="50" style="display: none;">
-        <label for="studentId" id="idLabel" style="display: none;">Student ID: </label>
-        <input type="text" id="studentId" name="studentId" minlength="7" maxlength="7" style="display: none;">
+    <h1><a href='/'>Brumsurf Stock App</a></h1>
+    <div id='container'>
+        <h3>{{stockType}}</h3>
+        <p id="brand" brand="{{brand}}">Brand: {{brand}}</p>
+        <p id="gender" gender="{{gender}}" class="hidden">Gender: {{gender}}</p>
+        <p id="size" size="{{size}}">Size: {{size}}</p>
+        <p id="number" number="{{number}}">{{stockType}} number: {{number}}</p>
+        <form onsubmit="return confirm('Sign in {{stockType}} {{number}}?')" action="{{signInUrl}}" method="POST">
+            {% csrf_token %}
+            <input id="signInUrl" name="url" value="" hidden>
+            <button id="signIn" onclick="setCurrentUrl('signInUrl')" type="submit">Sign In</button>
+        </form>
         <br>
-        <input id="signOutUrl" name="url" value="" hidden>
-        <button id="signOut" onclick="setCurrentUrl('signOutUrl')" type="submit">Sign Out</button>
-    </form>
-    <form onsubmit="return confirm('Trip sign out {{stockType}} {{number}}?')" action="{{onTripUrl}}" method="POST">
-        {% csrf_token %}
-        <input id="onTripUrl" name="url" value="" hidden>
-        <button id="onTrip" onclick="setCurrentUrl('onTripUrl')" type="submit">Trip Sign Out</button>
-    </form>
-    <form id="deleteItem" onsubmit="return confirm('Are you sure you want to delete this {{stockType}}?')" action="{{deleteUrl}}" method="POST">
-        {% csrf_token %}
-        <button type="submit">Delete</button>
-    </form>
+        <form onsubmit="return confirm('Sign out {{stockType}} {{number}}?')" action="{{signOutUrl}}" method="POST">
+            {% csrf_token %}
+            Sign Out For Student: 
+            <input type="checkbox" onchange="showHideSignOutOptions(this)">
+            <br>
+            <br id='checkBreak' class='hidden'>
+            <label for="studentName" id="nameLabel" class="hidden">
+                Name: 
+            </label>
+            <input type="text" id="studentName" name="studentName" maxlength="50" class="hidden">
+            <br id='nameBreak' class='hidden'>
+            <br id='fieldSplit' class='hidden'>
+            <label for="studentId" id="idLabel" class='hidden'>
+                Student ID: 
+            </label>
+            <input type="text" id="studentId" name="studentId" minlength="7" maxlength="7" class="hidden">
+            <input id="signOutUrl" name="url" value="" hidden>
+            <br><br id='signoutBreak' class='hidden'>
+            <button id="signOut" onclick="setCurrentUrl('signOutUrl')" type="submit">
+                Sign Out
+            </button>
+        </form>
+        <br>
+        <form onsubmit="return confirm('Trip sign out {{stockType}} {{number}}?')" action="{{onTripUrl}}" method="POST">
+            {% csrf_token %}
+            <input id="onTripUrl" name="url" value="" hidden>
+            <button id="onTrip" onclick="setCurrentUrl('onTripUrl')" type="submit">Trip Sign Out</button>
+        </form>
+        <br>
+        <form id="deleteItem" onsubmit="return confirm('Are you sure you want to delete this {{stockType}}?')" action="{{deleteUrl}}" method="POST">
+            {% csrf_token %}
+            <button type="submit">Delete</button>
+        </form>
+        <img src="{% static qrCode %}" alt="Item url">
+    </div>
 </body>
 </html>

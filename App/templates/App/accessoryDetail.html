@@ -14,22 +14,24 @@
     <title>Brumsurf Stock App</title>
 </head>
 <body onload="setDefaultsAndReload()">
-    <button onclick="location.href='/'">Home</button>
-    <h1>{{stockType}}</h1>
-    <h2 id="brand" brand="{{brand}}">Brand: {{brand}}</h2>
-    <h2 id="size" size="{{size}}">Size: {{size}}</h2>
-    <h2 id="amount" amount="{{amount}}">{{stockType}} amount: {{amount}}</h2>
-    <label>Update the amount? </label><input type="checkbox" id="updateTheAmount" onchange="showHideAmountUpdate(this)">
-    <br>
-    <form id="updateAmount" name="updateAmount" onsubmit="return confirm('Are you sure you want to update the amount?')" action="" method="POST">
-        {% csrf_token %}
-        <label for="newAmount" id="newAmountLabel" class="hidden">New Amount: </label><input type="number" id="newAmount" min="1" class="hidden">
+    <h1><a href='/'>Brumsurf Stock App</a></h1>
+    <div id='container'>
+        <h3>{{stockType}}</h3>
+        <p id="brand" brand="{{brand}}">Brand: {{brand}}</p>
+        <p id="size" size="{{size}}">Size: {{size}}</p>
+        <p id="amount" amount="{{amount}}">{{stockType}} amount: {{amount}}</p>
+        <label>Update the amount? </label><input type="checkbox" id="updateTheAmount" onchange="showHideAmountUpdate(this)">
         <br>
-        <button type="submit" onclick="setUrl()">Update</button>
-    </form>
-    <form id="deleteItem" name="deleteItem" onsubmit="return confirm('Are you sure you want to delete this {{stockType}}?')" action="{{deleteUrl}}" method="POST">
-        {% csrf_token %}
-        <button type="submit">Delete</button>
-    </form>
+        <form id="updateAmount" name="updateAmount" onsubmit="return confirm('Are you sure you want to update the amount?')" action="" method="POST">
+            {% csrf_token %}
+            <label for="newAmount" id="newAmountLabel" class="hidden">New Amount: </label><input type="number" id="newAmount" min="1" class="hidden">
+            <br>
+            <button type="submit" onclick="setUrl()">Update</button>
+        </form>
+        <form id="deleteItem" name="deleteItem" onsubmit="return confirm('Are you sure you want to delete this {{stockType}}?')" action="{{deleteUrl}}" method="POST">
+            {% csrf_token %}
+            <button type="submit">Delete</button>
+        </form>
+    </div>
 </body>
 </html>

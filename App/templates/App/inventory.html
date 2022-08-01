@@ -106,14 +106,12 @@
                     <th>Brand</th>
                     <th>Size</th>
                     <th>Number</th>
-                    <th>Url</th>
                 </tr>
                 {% for surf in surfboards %}
                 <tr>
-                    <td>{{ surf.brand }}</a></td>
-                    <td>{{ surf.size }}</a></td>
-                    <td>{{ surf.surfboardNumber }}</td>
-                    <td><a href='{{ surf.url }}'>surfboard{{surf.surfboardNumber}}</a></td>
+                    <td><a href='{{ surf.url }}'>{{ surf.brand }}</a></td>
+                    <td><a href='{{ surf.url }}'>{{ surf.size }}</a></td>
+                    <td><a href='{{ surf.url }}'>{{ surf.surfboardNumber }}</a></td>
                 </tr>
                 {% endfor %}
             </table>
@@ -127,13 +125,11 @@
                 <tr>
                     <th>Brand</th>
                     <th>Number</th>
-                    <th>Url</th>
                 </tr>
                 {% for skate in surfskates %}
                 <tr>
-                    <td>{{ skate.brand }}</a></td>
-                    <td>{{ skate.surfskateNumber }}</td>
-                    <td><a href='{{ skate.url }}'>surfskate{{skate.surfskateNumber}}</a></td>
+                    <td><a href='{{ skate.url }}'>{{ skate.brand }}</a></td>
+                    <td><a href='{{ skate.url }}'>{{ skate.surfskateNumber }}</a></td>
                 </tr>
                 {% endfor %}
             </table>
@@ -148,14 +144,12 @@
                     <th>Brand</th>
                     <th>Size</th>
                     <th>Total</th>
-                    <th>Url</th>
                 </tr>
                 {% for boot in boots %}
                 <tr>
-                    <td>{{ boot.brand }}</a></td>
-                    <td>{{ boot.size }}</td>
-                    <td>{{ boot.bootAmount }}</td>
-                    <td><a href='{{ boot.url }}'>{{boot.brand}}{{boot.size}}</a></td>
+                    <td><a href='{{ boot.url }}'>{{ boot.brand }}</a></td>
+                    <td><a href='{{ boot.url }}'>{{ boot.size }}</a></td>
+                    <td><a href='{{ boot.url }}'>{{ boot.bootAmount }}</a></td>
                 </tr>
                 {% endfor %}
             </table>
@@ -170,14 +164,12 @@
                     <th>Brand</th>
                     <th>Size</th>
                     <th>Total</th>
-                    <th>Url</th>
                 </tr>
                 {% for glove in gloves %}
                 <tr>
-                    <td>{{ glove.brand }}</a></td>
-                    <td>{{ glove.size }}</td>
-                    <td>{{ glove.gloveAmount }}</td>
-                    <td><a href='{{ glove.url }}'>{{glove.brand}}{{glove.size}}</a></td>
+                    <td><a href='{{ glove.url }}'>{{ glove.brand }}</a></td>
+                    <td><a href='{{ glove.url }}'>{{ glove.size }}</a></td>
+                    <td><a href='{{ glove.url }}'>{{ glove.gloveAmount }}</a></td>
                 </tr>
                 {% endfor %}
             </table>
@@ -192,14 +184,12 @@
                     <th>Brand</th>
                     <th>Size</th>
                     <th>Total</th>
-                    <th>Url</th>
                 </tr>
                 {% for hood in hoods %}
                 <tr>
-                    <td>{{ hood.brand }}</a></td>
-                    <td>{{ hood.size }}</td>
-                    <td>{{ hood.hoodAmount }}</td>
-                    <td><a href='{{ hood.url }}'>{{hood.brand}}{{hood.size}}</a></td>
+                    <td><a href='{{ hood.url }}'>{{ hood.brand }}</a></td>
+                    <td><a href='{{ hood.url }}'>{{ hood.size }}</a></td>
+                    <td><a href='{{ hood.url }}'>{{ hood.hoodAmount }}</a></td>
                 </tr>
                 {% endfor %}
             </table>
