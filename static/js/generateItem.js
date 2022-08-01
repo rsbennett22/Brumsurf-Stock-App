@@ -93,6 +93,14 @@ function setOptions() {
         document.getElementById('amount').className='shown'
         document.getElementById('amountLabel').className='shown'
     }
+    //if stock isn't wetsuit set the hover bg color of size to blue
+    sizeDiv = document.getElementById('sizeDiv');
+    if(stockType.toLowerCase()!='wetsuit') {
+        sizeDiv.className='blue';
+    }
+    else {
+        sizeDiv.className='orange';
+    }
 }
 function createOption(parent, value) {
     var newOption = document.createElement('option');

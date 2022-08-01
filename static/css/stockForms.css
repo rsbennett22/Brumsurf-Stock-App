@@ -6,16 +6,31 @@
 }
 button {
     border-radius: 15px;
-    background-color: lightgray;
+    background-color: white;
     width: auto;
     min-width: 200px;
     height: auto;
     min-height: 30px;
-    border: solid white;
+    border: none;
     color: black;
     padding: 5px;
     margin: 5px;
 }
-button:hover {
-    background-color: rgba(125, 132, 138, 0.7);
+#container {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+    height: auto;
+    border-radius: 30px;
+    background-color: lightgray;
+    border-width: 100px;
+    margin: auto;
+}
+#orange:hover {
+    cursor: pointer;
+    background-color: rgba(245,151,15,1);
+}
+#blue:hover {
+    cursor: pointer;
+    background-color: rgba(0,167,232,1);
 }

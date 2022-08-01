@@ -19,6 +19,7 @@ function setDefaultsAndReload() {
         document.getElementById('signIn').disabled = true;
     }
     else if(onTrip=='True' || signedOut=='True') {
+        document.getElementById('studentSignOut').disabled = true;
         document.getElementById('onTrip').disabled = true;
         document.getElementById('signOut').disabled = true;
     }

@@ -33,7 +33,7 @@
         <form onsubmit="return confirm('Sign out {{stockType}} {{number}}?')" action="{{signOutUrl}}" method="POST">
             {% csrf_token %}
             Sign Out For Student: 
-            <input type="checkbox" onchange="showHideSignOutOptions(this)">
+            <input id='studentSignOut' type="checkbox" onchange="showHideSignOutOptions(this)">
             <br>
             <br id='checkBreak' class='hidden'>
             <label for="studentName" id="nameLabel" class="hidden">
@@ -61,7 +61,7 @@
         <br>
         <form id="deleteItem" onsubmit="return confirm('Are you sure you want to delete this {{stockType}}?')" action="{{deleteUrl}}" method="POST">
             {% csrf_token %}
-            <button type="submit">Delete</button>
+            <button id='delete' type="submit">Delete</button>
         </form>
         <img src="{% static qrCode %}" alt="Item url">
     </div>

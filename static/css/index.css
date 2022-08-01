@@ -1,3 +1,10 @@
+#colours {
+	lightblue:  #00A7E8;
+	orange:  #F5970F;
+	darkblue:  #2E00BB;
+	background: linear-gradient(0deg, rgba(0,167,232,1) 0%, rgba(245,151,15,0.9) 91%); 
+}
+
 * {
 	font-family: "Monaco", monospace;
 	text-align: center;
@@ -10,37 +17,53 @@ a {
 	color: black;
 }
 button {
-	border-radius: 15px;
-	background-color: white;
-	width: auto;
-	min-width: 150px;
-	height: auto;
-	min-height: 30px;
-	border: solid white;
-	color: black;
+    border-radius: 15px;
+    background-color: white;
+    width: auto;
+    min-width: 200px;
+    height: auto;
+    min-height: 30px;
+    border: none;
+    color: black;
+    padding: 5px;
+    margin: 5px;
+}
+button:hover {
+	cursor: pointer;
 }
 #stockFormsDiv {
 	cursor: pointer;
 	width: 100%;
 	height: 50%;
 	border-radius: 30px;
-	background-color: rgba(255,117,0,0.7);
+	background-color: lightgray;
 	border-width: 100px;
 	margin: auto;
 }
 #stockFormsDiv:hover{
-	background-color: rgba(184,86,0,0.7);
+	background-color: rgba(160, 160, 160, 0.7);
+}
+#stockFormsDiv:hover button {
+	background: rgba(245,151,15,1);
+	border: solid;
+	border-color: rgba(245,151,15,1);
 }
 #inventoryDiv {
 	width: 100%;
 	height: 50%;
-	background-color: rgba(0, 133, 255, 0.7);
+	background-color: lightgray;
 	border-radius: 30px;
-	margin: auto;
+	margin-top: 1px;
 	cursor: pointer;
 }
 #inventoryDiv:hover{
-	background-color: rgba(0,93,170,0.7);
+	cursor: pointer;
+	background-color: rgba(160, 160, 160, 0.7);
+}
+#inventoryDiv:hover button {
+	background: rgba(0,167,232,1);
+	border: solid;
+	border-color: rgba(0,167,232,1);
 }
 #content {
 	padding-left: 20px;
