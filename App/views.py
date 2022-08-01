@@ -199,7 +199,7 @@ def addNewItem(request):
                 return itemDetail(request, stockType, number)
             else:
                 #Generate QR code for item
-                generateQRCode(stockType, brand, gender, size, number, fileName)
+                generateQRCode(stockType, number, fileName)
                 #Create a new item object and add it to db
                 if(stockType=='wetsuit'):
                     print(bcolors.OKGREEN+"Creating a new "+stockType+" instance!"+bcolors.ENDC)
@@ -317,10 +317,11 @@ def accessoryDetail(request, pk):
     #Load detail page
     return render(request, 'App/accessoryDetail.html', {'stockType': stockType, 'brand': brand, 'size': size, 'amount': amount, 'pk': pk, 'deleteUrl': deleteUrl, 'updateUrl': updateUrl})
 
-def generateQRCode(stockType, brand, gender, size, number, fileName):
-    print(bcolors.OKGREEN+"Generating a new"+stockType+" QR code..."+bcolors.ENDC)
+def generateQRCode(stockType, number, fileName):
+    print(bcolors.OKGREEN+"Generating a new "+stockType+" QR code..."+bcolors.ENDC)
     #Generate qrcode from data
     qrData = 'http://192.168.0.75:8000/detail/'+stockType+'&'+str(number)
+    print(bcolors.FAIL+qrData+bcolors.ENDC)
     qr = qrcode.make(qrData)
     print(bcolors.OKGREEN+"Saving generated QR code..."+bcolors.ENDC)
     path = 'static/qrcodes/'+fileName
