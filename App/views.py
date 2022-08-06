@@ -1,5 +1,3 @@
-from distutils.dep_util import newer_pairwise
-from multiprocessing.context import BaseContext
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 import qrcode
@@ -133,7 +131,7 @@ def addNewItem(request):
                     #Get newboot pk
                     bootMade = Boot.objects.get(brand=brand, size=size)
                     pk = bootMade.pk
-                    bootMade.url = 'http://192.168.0.75:8000/detail/'+str(pk)
+                    bootMade.url = 'http://192.168.0.59:8000/detail/'+str(pk)
                     bootMade.save()
                     #Load accessory details page
                     return accessoryDetail(request, pk)
@@ -159,7 +157,7 @@ def addNewItem(request):
                     #Get newboot pk
                     gloveMade = Glove.objects.get(brand=brand, size=size)
                     pk = gloveMade.pk
-                    gloveMade.url = 'http://192.168.0.75:8000/detail/'+str(pk)
+                    gloveMade.url = 'http://192.168.0.59:8000/detail/'+str(pk)
                     gloveMade.save()
                     #Load accessory details page
                     return accessoryDetail(request, pk)
@@ -185,7 +183,7 @@ def addNewItem(request):
                     #Get newboot pk
                     hoodMade = Hood.objects.get(brand=brand, size=size)
                     pk = hoodMade.pk
-                    hoodMade.url = 'http://192.168.0.75:8000/detail/'+str(pk)
+                    hoodMade.url = 'http://192.168.0.59:8000/detail/'+str(pk)
                     hoodMade.save()
                     #Load accessory details page
                     return accessoryDetail(request, pk)
@@ -210,7 +208,7 @@ def addNewItem(request):
                     newWetsuit.size=size
                     newWetsuit.wetsuitNumber=number
                     newWetsuit.qrCode=fileName
-                    newWetsuit.url='http://192.168.0.75:8000/detail/'+stockType+'&'+str(number)
+                    newWetsuit.url='http://192.168.0.59:8000/detail/'+stockType+'&'+str(number)
                     print(bcolors.OKBLUE+"New wetsuit info: "+str(newWetsuit)+bcolors.ENDC)
                     newWetsuit.save()
                     print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
@@ -223,7 +221,7 @@ def addNewItem(request):
                     newBoard.size=size
                     newBoard.surfboardNumber=number
                     newBoard.qrCode=fileName
-                    newBoard.url='http://192.168.0.75:8000/detail/'+stockType+'&'+str(number)
+                    newBoard.url='http://192.168.0.59:8000/detail/'+stockType+'&'+str(number)
                     newBoard.save()
                     print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
                     return itemDetail(request, stockType, number)
@@ -235,7 +233,7 @@ def addNewItem(request):
                     newBoard.size=size
                     newBoard.surfskateNumber=number
                     newBoard.qrCode=fileName
-                    newBoard.url='http://192.168.0.75:8000/detail/'+stockType+'&'+str(number)
+                    newBoard.url='http://192.168.0.59:8000/detail/'+stockType+'&'+str(number)
                     newBoard.save()
                     print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
                     return itemDetail(request, stockType, number)
@@ -320,7 +318,7 @@ def accessoryDetail(request, pk):
 def generateQRCode(stockType, number, fileName):
     print(bcolors.OKGREEN+"Generating a new "+stockType+" QR code..."+bcolors.ENDC)
     #Generate qrcode from data
-    qrData = 'http://192.168.0.75:8000/detail/'+stockType+'&'+str(number)
+    qrData = 'http://192.168.0.59:8000/detail/'+stockType+'&'+str(number)
     print(bcolors.FAIL+qrData+bcolors.ENDC)
     qr = qrcode.make(qrData)
     print(bcolors.OKGREEN+"Saving generated QR code..."+bcolors.ENDC)

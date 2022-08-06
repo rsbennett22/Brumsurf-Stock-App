@@ -5,7 +5,7 @@
     color: black;
 }
 table, th, td {
-    border: 1px solid black;
+    border: solid black 1px;
     border-collapse: collapse;
     margin: auto;
     background-color: white;

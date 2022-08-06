@@ -23,17 +23,17 @@ function setDefaultsAndReload() {
         document.getElementById('onTrip').disabled = true;
         document.getElementById('signOut').disabled = true;
     }
-    if(window.location.href == 'http://192.168.0.75:8000/addNewItem/') {
+    if(window.location.href == 'http://192.168.0.59:8000/addNewItem/') {
         if(stockType=='wetsuit') {
-            url = 'http://192.168.0.75:8000/detail/wetsuit&'+number;
+            url = 'http://192.168.0.59:8000/detail/wetsuit&'+number;
             window.location.replace(url);
         }
         else if(stockType=='surfboard') {
-            url = 'http://192.168.0.75:8000/detail/surfboard&'+number
+            url = 'http://192.168.0.59:8000/detail/surfboard&'+number
             window.location.replace(url)
         }
         else {
-            url = 'http://192.168.0.75:8000/detail/surfskate&'+number
+            url = 'http://192.168.0.59:8000/detail/surfskate&'+number
             window.location.replace(url)
         }
     }
