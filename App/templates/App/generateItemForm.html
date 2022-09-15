@@ -20,10 +20,10 @@
             {% csrf_token %}
             <input id="stockType" name="stockType" value="{{stockType}}" readonly hidden>
             <div id='orange'>
-                <label>
+                <label id='brandLabel'>
                     Brand: 
                 </label>
-                <select id="brand" class name="brand" required></select>
+                <select id="brand" name="brand"></select>
             </div>
             <br>
             <div id='blue'>
@@ -47,7 +47,7 @@
                 <label for="itemNum" id="numLabel">
                     Number: 
                 </label>
-                <input type="number" id="num" name="num" min="1">
+                <input type="number" id="num" name="num" min="1" value="1">
             </div>
             <div id='orange'>
                 <label for="amount" id="amountLabel" class="hidden">

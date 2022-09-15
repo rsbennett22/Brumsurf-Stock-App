@@ -9,7 +9,8 @@ function saveCSV() {
 	*/
 
 	//Format data into CSV format
-	fmtd_Wetsuits = format(wetsuitArray, 'wetsuit');
+	fmtd_Wetsuits_Male = format(wetsuitArray_Male, 'wetsuit');
+	fmtd_Wetsuits_Female = format(wetsuitArray_Female, 'wetsuit');
 	fmtd_Surfboards = format(surfboardArray, 'surfboard');
 	fmtd_Surfskates = format(surfskateArray, 'surfskate');
 	fmtd_Boots = format(bootArray, 'boots');
@@ -24,7 +25,7 @@ function saveCSV() {
 	console.log(fmtd_Hoods);
 	*/
 	//Collate all data
-	csvData = combine(fmtd_Wetsuits, fmtd_Surfboards, fmtd_Surfskates, fmtd_Boots, fmtd_Gloves, fmtd_Hoods);
+	csvData = combine(fmtd_Wetsuits_Male, fmtd_Wetsuits_Female, fmtd_Surfboards, fmtd_Surfskates, fmtd_Boots, fmtd_Gloves, fmtd_Hoods);
 	//console.log(csvData);
 
 	//Export data as a file
@@ -80,7 +81,7 @@ function format(array, type) {
 		for(let i=0; i<array.length; i++) {
 			//Add each element to formattedData
 			let accessory = array[i];
-			formattedData += accessory.brand+','+accessory.size+','
+			formattedData += accessory.size+','
 			if(type=='boots')
 			{
 				formattedData += accessory.bootAmount;
@@ -97,16 +98,17 @@ function format(array, type) {
 		return formattedData;
 	}
 }
-function combine(wetsuits, surfboards, surfskates, boots, gloves, hoods) {
+function combine(wetsuits_male, wetsuits_female, surfboards, surfskates, boots, gloves, hoods) {
 	combined=''
 	//Set headings for tables
 	wetsuitHeadings = 'Brand, Gender, Size, Number,On Trip, Signed Out, Signed In, Name, Student Id\n';
 	surfboardHeadings = 'Brand, Size, Number, On Trip, Signed Out, Signed In, Name, Student Id\n';
 	surfskateHeadings = 'Brand, Number, On Trip, Signed Out, Signed In, Name, Student Id\n';
-	accessoryHeadings = 'Brand, Size, Amount\n';
+	accessoryHeadings = 'Size, Amount\n';
 
 	//Append data together
-	combined += 'Wetsuits\n' + wetsuitHeadings + wetsuits + '\n'
+	combined += 'Male Wetsuits\n' + wetsuitHeadings + wetsuits_male + '\n'
+			 + 'Female Wetsuits\n' + wetsuitHeadings + wetsuits_female + '\n'
 			 + 'Surfboards\n' + surfboardHeadings + surfboards + '\n'
 			 + 'Surfskates\n' + surfskateHeadings + surfskates + '\n'
 			 + 'Boots\n' + accessoryHeadings + boots + '\n'

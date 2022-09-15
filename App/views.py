@@ -5,10 +5,13 @@ from os.path import exists
 from os import remove
 from .models import StockItem, Wetsuit, Surfboard, Surfskate, Boot, Glove, Hood
 import socket
+import csv, io
 
+'''
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("8.8.8.8", 80))
 IP = s.getsockname()[0]
+'''
 
 class bcolors:
     HEADER = '\033[95m'
@@ -22,7 +25,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 def index(request):
-    print(IP)
+    #print(IP)
     return render(request, 'App/index.html',print(bcolors.OKBLUE+'Successfully loaded home page!'+bcolors.ENDC))
 
 def inventory(request):
@@ -32,9 +35,9 @@ def inventory(request):
     wetsuits = Wetsuit.objects.all().order_by('wetsuitNumber')
     surfboards = Surfboard.objects.all().order_by('surfboardNumber')
     surfskates = Surfskate.objects.all().order_by('surfskateNumber')
-    boots = Boot.objects.all().order_by('bootAmount')
-    gloves = Glove.objects.all().order_by('gloveAmount')
-    hoods = Hood.objects.all().order_by('hoodAmount')
+    boots = Boot.objects.all().order_by('pk')
+    gloves = Glove.objects.all().order_by('pk')
+    hoods = Hood.objects.all().order_by('pk')
     return render(request, 'App/inventory.html', {'wetsuits' : wetsuits, 'surfboards': surfboards, 'surfskates': surfskates, 'boots': boots, 'gloves': gloves, 'hoods': hoods})
 
 def stockForms(request):
@@ -112,7 +115,7 @@ def addNewItem(request):
             if(stockType=='boot'):
                 #Check for matching item
                 try:
-                    matchingBoot = Boot.objects.get(brand=brand, size=size)
+                    matchingBoot = Boot.objects.get(size=size)
                     #If match item, load detail page
                     return accessoryDetail(request, matchingBoot.pk)
                 except:
@@ -122,23 +125,23 @@ def addNewItem(request):
                     #Create new boot instance
                     newBoot = Boot()
                     newBoot.stockType=stockType
-                    newBoot.brand=brand
+                    newBoot.brand=''
                     newBoot.size=size
                     newBoot.bootAmount=amount
                     newBoot.url=''
                     #Save boot
                     newBoot.save()
                     #Get newboot pk
-                    bootMade = Boot.objects.get(brand=brand, size=size)
+                    bootMade = Boot.objects.get(size=size)
                     pk = bootMade.pk
-                    bootMade.url = 'http://192.168.0.59:8000/detail/'+str(pk)
+                    bootMade.url = 'http://0.0.0.0:8000/detail/'+str(pk)
                     bootMade.save()
                     #Load accessory details page
                     return accessoryDetail(request, pk)
             elif(stockType=='glove'):
                 #Check for matching item
                 try:
-                    matchingGlove = Glove.objects.get(brand=brand, size=size)
+                    matchingGlove = Glove.objects.get(size=size)
                     #If match item, load detail page
                     return accessoryDetail(request, matchingGlove.pk)
                 except:
@@ -148,23 +151,23 @@ def addNewItem(request):
                     #Create new boot instance
                     newGlove = Glove()
                     newGlove.stockType=stockType
-                    newGlove.brand=brand
+                    newGlove.brand=''
                     newGlove.size=size
                     newGlove.gloveAmount=amount
                     newGlove.url=''
                     #Save boot
                     newGlove.save()
                     #Get newboot pk
-                    gloveMade = Glove.objects.get(brand=brand, size=size)
+                    gloveMade = Glove.objects.get(size=size)
                     pk = gloveMade.pk
-                    gloveMade.url = 'http://192.168.0.59:8000/detail/'+str(pk)
+                    gloveMade.url = 'http://0.0.0.0:8000/detail/'+str(pk)
                     gloveMade.save()
                     #Load accessory details page
                     return accessoryDetail(request, pk)
             else:
                 #Check for matching item
                 try:
-                    matchingHood = Hood.objects.get(brand=brand, size=size)
+                    matchingHood = Hood.objects.get(size=size)
                     #If match item, load detail page
                     return accessoryDetail(request, matchingHood.pk)
                 except:
@@ -174,16 +177,16 @@ def addNewItem(request):
                     #Create new boot instance
                     newHood = Hood()
                     newHood.stockType=stockType
-                    newHood.brand=brand
+                    newHood.brand=''
                     newHood.size=size
                     newHood.hoodAmount=amount
                     newHood.url=''
                     #Save boot
                     newHood.save()
                     #Get newboot pk
-                    hoodMade = Hood.objects.get(brand=brand, size=size)
+                    hoodMade = Hood.objects.get(size=size)
                     pk = hoodMade.pk
-                    hoodMade.url = 'http://192.168.0.59:8000/detail/'+str(pk)
+                    hoodMade.url = 'http://0.0.0.0:8000/detail/'+str(pk)
                     hoodMade.save()
                     #Load accessory details page
                     return accessoryDetail(request, pk)
@@ -208,7 +211,7 @@ def addNewItem(request):
                     newWetsuit.size=size
                     newWetsuit.wetsuitNumber=number
                     newWetsuit.qrCode=fileName
-                    newWetsuit.url='http://192.168.0.59:8000/detail/'+stockType+'&'+str(number)
+                    newWetsuit.url='http://0.0.0.0:8000/detail/'+stockType+'&'+str(number)
                     print(bcolors.OKBLUE+"New wetsuit info: "+str(newWetsuit)+bcolors.ENDC)
                     newWetsuit.save()
                     print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
@@ -221,7 +224,7 @@ def addNewItem(request):
                     newBoard.size=size
                     newBoard.surfboardNumber=number
                     newBoard.qrCode=fileName
-                    newBoard.url='http://192.168.0.59:8000/detail/'+stockType+'&'+str(number)
+                    newBoard.url='http://0.0.0.0:8000/detail/'+stockType+'&'+str(number)
                     newBoard.save()
                     print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
                     return itemDetail(request, stockType, number)
@@ -233,7 +236,7 @@ def addNewItem(request):
                     newBoard.size=size
                     newBoard.surfskateNumber=number
                     newBoard.qrCode=fileName
-                    newBoard.url='http://192.168.0.59:8000/detail/'+stockType+'&'+str(number)
+                    newBoard.url='http://0.0.0.0:8000/detail/'+stockType+'&'+str(number)
                     newBoard.save()
                     print(bcolors.OKBLUE+"Successfully created a new "+stockType+" instance!"+bcolors.ENDC)
                     return itemDetail(request, stockType, number)
@@ -318,7 +321,7 @@ def accessoryDetail(request, pk):
 def generateQRCode(stockType, number, fileName):
     print(bcolors.OKGREEN+"Generating a new "+stockType+" QR code..."+bcolors.ENDC)
     #Generate qrcode from data
-    qrData = 'http://192.168.0.59:8000/detail/'+stockType+'&'+str(number)
+    qrData = 'http://0.0.0.0:8000/detail/'+stockType+'&'+str(number)
     print(bcolors.FAIL+qrData+bcolors.ENDC)
     qr = qrcode.make(qrData)
     print(bcolors.OKGREEN+"Saving generated QR code..."+bcolors.ENDC)
@@ -512,3 +515,287 @@ def onTrip(request, pk):
             itemToTrip.save()
             print(bcolors.OKBLUE+"Item successfully signed out on trip!"+bcolors.ENDC)
             return redirect(prevUrl)
+
+def importData(request):
+    csvFile = request.FILES['file']
+    if not csvFile.name.endswith('.csv'):
+        #redirect to an error page
+        print('error')
+
+    data = csvFile.read().decode('UTF-8')
+    print(data)
+    print(type(data))
+
+    stockType = ''
+
+    ioString = io.StringIO(data)
+    for column in csv.reader(ioString, delimiter=','):
+        #Only print rows that contain data
+        if len(column)>0:
+            #Check if col[0] is a row that isn't data
+            #if column[0]=='Brand' or column[0]=='Surfboards' or column[0]=='Surfskates' or column[0]=='Boots' or column[0]=='Gloves' or column[0]=='Hoods' or column[0]=='Size' or column[0]=='Female Wetsuits' or column[0]=='Male Wetsuits':
+            #    continue
+            #Check what type of stock currently on
+            if column[0]=='Male Wetsuits' or column[0]=='Female Wetsuits':
+                stockType = 'wetsuit'
+                continue
+            elif column[0]=='Surfboards':
+                stockType = 'surfboard'
+                continue
+            elif column[0]=='Surfskates':
+                stockType='surfskate'
+                continue
+            elif column[0]=='Boots':
+                stockType = 'boot'
+                continue
+            elif column[0]=='Gloves':
+                stockType = 'glove'
+                continue
+            elif column[0]=='Hoods':
+                stockType = 'hood'
+                continue
+            elif column[0]=='Brand' or column[0]=='Size':
+                continue
+            else:
+                print(stockType)
+                print(column)
+                #Check what the current stocktype is
+                if stockType=='wetsuit':
+                    #Set variable attributes of wetsuit
+                    wetsuitNumber = column[3]
+                    print(wetsuitNumber)
+                    wetsuit = Wetsuit()
+                    wetsuit.stockType=stockType
+                    wetsuit.brand=column[0]
+                    wetsuit.gender=column[1]
+                    wetsuit.size=column[2]
+                    wetsuit.onTrip=column[4]
+                    wetsuit.signedOut=column[5]
+                    wetsuit.signedIn=column[6]
+                    wetsuit.name=column[7]
+                    wetsuit.studentId=column[8]
+                    wetsuit.url='http://0.0.0.0:8000/detail/'+stockType+'&'+wetsuitNumber
+                    wetsuit.qrCode=stockType+column[0]+column[1]+column[2]+column[3]+'.png'
+                    try:
+                        suitToUpdate = Wetsuit.objects.get(wetsuitNumber=wetsuitNumber)
+                        #If find a suit, update suit
+                        #compate attributes and update as necessary
+                        print('Updating old wetsuit')
+                        suitToUpdate = compareAndUpdateWetsuit(suitToUpdate, wetsuit)
+                        suitToUpdate.save()
+                        print(suitToUpdate.url)
+                    except:
+                        #If not find a suit, save the created one
+                        print('Creating new wetsuit')
+                        wetsuit.wetsuitNumber=wetsuitNumber
+                        wetsuit.save()
+                elif stockType=='surfboard':
+                    #Set variable attributes of surfboard
+                    surfboardNumber = column[2]
+                    print(surfboardNumber)
+                    surfboard = Surfboard()
+                    surfboard.stockType=stockType
+                    surfboard.brand=column[0]
+                    surfboard.size=column[1]
+                    surfboard.onTrip=column[3]
+                    surfboard.signedOut=column[4]
+                    surfboard.signedIn=column[5]
+                    surfboard.name=column[6]
+                    surfboard.studentId=column[7]
+                    surfboard.url='http://0.0.0.0:8000/detail/'+stockType+'&'+surfboardNumber
+                    surfboard.qrCode=stockType+column[0]+column[1]+column[2]+'.png'
+                    try:
+                        boardToUpdate = Surfboard.objects.get(surfboardNumber=surfboardNumber)
+                        #If find a board, update board
+                        #compate attributes and update as necessary
+                        print('Updating old surfboard')
+                        boardToUpdate = compareAndUpdateSurfboard(boardToUpdate, surfboard)
+                        boardToUpdate.save()
+                        print(boardToUpdate.url)
+                    except:
+                        #If not find a suit, save the created one
+                        print('Creating new surfboard')
+                        surfboard.surfboardNumber=surfboardNumber
+                        surfboard.save()
+                elif stockType=='surfskate':
+                    #Set variable attributes of surfskate
+                    surfskateNumber = column[1]
+                    print(surfskateNumber)
+                    surfskate = Surfskate()
+                    surfskate.stockType=stockType
+                    surfskate.brand=column[0]
+                    surfskate.onTrip=column[2]
+                    surfskate.signedOut=column[3]
+                    surfskate.signedIn=column[4]
+                    surfskate.name=column[5]
+                    surfskate.studentId=column[6]
+                    surfskate.url='http://0.0.0.0:8000/detail/'+stockType+'&'+surfskateNumber
+                    surfskate.qrCode=stockType+column[0]+column[1]+'.png'
+                    try:
+                        boardToUpdate = Surfskate.objects.get(surfskateNumber=surfskateNumber)
+                        #If find a skate, update skate
+                        #compate attributes and update as necessary
+                        print('Updating old surfskate')
+                        boardToUpdate = compareAndUpdateSurfskate(boardToUpdate, surfskate)
+                        boardToUpdate.save()
+                        print(boardToUpdate.url)
+                    except:
+                        #If not find a suit, save the created one
+                        print('Creating new surfskate')
+                        surfskate.surfskateNumber=surfskateNumber
+                        surfskate.save()
+                else:
+                    #Set variable attributes of boot
+                    accessory = None
+                    size = column[0]
+                    if stockType=='boot':
+                        accessory = Boot()
+                        accessory.bootAmount=column[1]
+                    if stockType=='glove':
+                        accessory = Glove()
+                        accessory.gloveAmount=column[1]
+                    if stockType=='hood':
+                        accessory = Hood()
+                        accessory.hoodAmount=column[1]
+
+                    accessory.stockType=stockType
+                    accessory.size=column[0]
+                    accessory.url=''
+                    accessory.brand=''
+                    try:
+                        if stockType=='boot':
+                            accessoryToUpdate = Boot.objects.get(size=size)
+                        elif stockType=='glove':
+                            accessoryToUpdate = Glove.objects.get(size=size)
+                        elif stockType=='hood':
+                            accessoryToUpdate = Hood.objects.get(size=size)
+                        #If find a suit, update suit
+                        #compate attributes and update as necessary
+                        print('Updating old accessory')
+                        accessoryToUpdate = compareAndUpdateAccessory(stockType, accessoryToUpdate, accessory)
+                        accessoryToUpdate.save()
+                        print(accessoryToUpdate.url)
+                    except:
+                        #If not find a suit, save the created one
+                        print('Creating new accessory')
+                        accessory.save()
+                        #Then update the url of the boot
+                        accessory.url = 'http://0.0.0.0:8000/detail/'+str(accessory.pk)
+                        accessory.save()
+
+    return inventory(request)
+
+#fileName=stockType+brand+gender+str(size)+str(number)+'.png'
+
+def compareAndUpdateWetsuit(old, new):
+    hasUrlUpdated = False
+    if old.brand!=new.brand:
+        old.brand=new.brand
+    if old.gender!=new.gender:
+        old.gender=new.gender
+    if old.size!=new.size:
+        old.size=new.size
+    if old.onTrip!=new.onTrip:
+        old.onTrip=new.onTrip
+    if old.signedOut!=new.signedOut:
+        old.signedOut=new.signedOut
+    if old.signedIn!=new.signedIn:
+        old.signedIn=new.signedIn
+    if old.name!=new.name:
+        old.name=new.name
+    if old.studentId!=new.studentId:
+        old.studentId=new.studentId
+    if old.url!=new.url:
+        old.url=new.url
+        hasUrlUpdated=True
+    if old.qrCode!=new.qrCode:
+        old.qrCode=new.qrCode
+    if hasUrlUpdated:
+        createOrUpdateQR(old.url, old.qrCode)
+    return old
+
+def compareAndUpdateSurfboard(old, new):
+    hasUrlUpdated = False
+    if old.brand!=new.brand:
+        old.brand=new.brand
+    if old.size!=new.size:
+        old.size=new.size
+    if old.onTrip!=new.onTrip:
+        old.onTrip=new.onTrip
+    if old.signedOut!=new.signedOut:
+        old.signedOut=new.signedOut
+    if old.signedIn!=new.signedIn:
+        old.signedIn=new.signedIn
+    if old.name!=new.name:
+        old.name=new.name
+    if old.studentId!=new.studentId:
+        old.studentId=new.studentId
+    if old.url!=new.url:
+        old.url=new.url
+        hasUrlUpdated = True
+    if old.qrCode!=new.qrCode:
+        old.qrCode=new.qrCode
+    if hasUrlUpdated:
+        createOrUpdateQR(old.url, old.qrCode)
+    return old
+
+def compareAndUpdateSurfskate(old, new):
+    hasUrlUpdated = False
+    if old.brand!=new.brand:
+        old.brand=new.brand
+    if old.onTrip!=new.onTrip:
+        old.onTrip=new.onTrip
+    if old.signedOut!=new.signedOut:
+        old.signedOut=new.signedOut
+    if old.signedIn!=new.signedIn:
+        old.signedIn=new.signedIn
+    if old.name!=new.name:
+        old.name=new.name
+    if old.studentId!=new.studentId:
+        old.studentId=new.studentId
+    if old.url!=new.url:
+        old.url=new.url
+        hasUrlUpdated = True
+    if old.qrCode!=new.qrCode:
+        old.qrCode=new.qrCode
+    if hasUrlUpdated:
+        createOrUpdateQR(old.url, old.qrCode)
+    return old
+
+def compareAndUpdateAccessory(stockType, old, new):
+    if stockType=='boot':
+        if old.bootAmount!=new.bootAmount:
+            old.bootAmount=new.bootAmount
+    if stockType=='glove':
+        if old.gloveAmount!=new.gloveAmount:
+            old.gloveAmount=new.gloveAmount
+    if stockType=='hood':
+        if old.hoodAmount!=new.hoodAmount:
+            old.hoodAmount=new.hoodAmount
+    if old.size!=new.size:
+        old.size=new.size
+    if old.url!=new.url:
+        old.url='http://0.0.0.0:8000/detail/'+str(old.pk)
+    return old
+
+def generateQRCodeFromUploadCSV(url, fileName):
+    print(bcolors.OKGREEN+"Generating a new QR code..."+bcolors.ENDC)
+    #Generate qrcode from data
+    print(bcolors.FAIL+url+bcolors.ENDC)
+    qr = qrcode.make(url)
+    print(bcolors.OKGREEN+"Saving generated QR code..."+bcolors.ENDC)
+    path = 'static/qrcodes/'+str(fileName)
+    qr.save(path)
+    if(exists(path)):
+        return print(bcolors.OKBLUE+"Successfully generated and saved QR code!"+bcolors.ENDC)
+    else:
+        return print(bcolors.FAIL+"QR code failed to save!"+bcolors.ENDC)
+
+def createOrUpdateQR(url, fileName):
+    #Check if a qr code exists
+    isQrPresent = checkForQR(str(fileName))
+    print(isQrPresent)
+    if isQrPresent:
+        deleteQRCode(str(fileName))
+    #Generate a new qr code
+    generateQRCodeFromUploadCSV(url, fileName)

@@ -7,19 +7,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
     <script>
-        var wetsuitArray = [];
+        var wetsuitArray_Male = [];
+        var wetsuitArray_Female = [];
         {% for wet in wetsuits %}
-            wetsuitArray.push({
-            "brand": "{{ wet.brand }}",
-            "gender": "{{ wet.gender }}",
-            "size": "{{ wet.size }}",
-            "onTrip": "{{ wet.onTrip }}",
-            "signedOut": "{{ wet.signedOut }}",
-            "signedIn": "{{ wet.signedIn }}",
-            "name": "{{ wet.name }}",
-            "studentId": "{{ wet.studentId }}",
-            "wetsuitNumber": "{{ wet.wetsuitNumber }}"
-        })
+            {% if wet.gender == "male" %}
+                wetsuitArray_Male.push({
+                "brand": "{{ wet.brand }}",
+                "gender": "{{ wet.gender }}",
+                "size": "{{ wet.size }}",
+                "onTrip": "{{ wet.onTrip }}",
+                "signedOut": "{{ wet.signedOut }}",
+                "signedIn": "{{ wet.signedIn }}",
+                "name": "{{ wet.name }}",
+                "studentId": "{{ wet.studentId }}",
+                "wetsuitNumber": "{{ wet.wetsuitNumber }}"
+                })
+            {% else %}
+                wetsuitArray_Female.push({
+                "brand": "{{ wet.brand }}",
+                "gender": "{{ wet.gender }}",
+                "size": "{{ wet.size }}",
+                "onTrip": "{{ wet.onTrip }}",
+                "signedOut": "{{ wet.signedOut }}",
+                "signedIn": "{{ wet.signedIn }}",
+                "name": "{{ wet.name }}",
+                "studentId": "{{ wet.studentId }}",
+                "wetsuitNumber": "{{ wet.wetsuitNumber }}"
+                })
+            {% endif %}
         {% endfor %}
         var surfboardArray = [];
         {% for surf in surfboards %}
@@ -77,22 +92,42 @@
 <body>
     <h1><a href='/'>Brumsurf Stock App</a></h1>
     <div id='content'>
-        <h3>Wetsuits</h3>
+        <h3>Male Wetsuits</h3>
         <table>
             <tr>
                 <th>Brand</th>
-                <th>Gender</th>
                 <th>Size</th>
                 <th>Number</th>
                 <th>Signed In</th>
             </tr>
             {% for wetty in wetsuits %}
             <tr id='orange' onclick="location.href='{{wetty.url}}'">
+                {% if wetty.gender == "male" %}
                 <td>{{ wetty.brand }}</td>
-                <td>{{ wetty.gender }}</td>
                 <td>{{ wetty.size }}</td>
                 <td>{{ wetty.wetsuitNumber }}</td>
                 <td>{{ wetty.signedIn }}</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <h3>Female Wetsuits</h3>
+        <table>
+            <tr>
+                <th>Brand</th>
+                <th>Size</th>
+                <th>Number</th>
+                <th>Signed In</th>
+            </tr>
+            {% for wetty in wetsuits %}
+            <tr id='orange' onclick="location.href='{{wetty.url}}'">
+                {% if wetty.gender == "female" %}
+                <td>{{ wetty.brand }}</td>
+                <td>{{ wetty.size }}</td>
+                <td>{{ wetty.wetsuitNumber }}</td>
+                <td>{{ wetty.signedIn }}</td>
+                {% endif %}
             </tr>
             {% endfor %}
         </table>
@@ -134,13 +169,11 @@
         <h3>Boots</h3>
         <table>
             <tr>
-                <th>Brand</th>
                 <th>Size</th>
                 <th>Total</th>
             </tr>
             {% for boot in boots %}
             <tr id='blue' onclick="location.href='{{boot.url}}'">
-                <td>{{ boot.brand }}</td>
                 <td>{{ boot.size }}</td>
                 <td>{{ boot.bootAmount }}</td>
             </tr>
@@ -150,13 +183,11 @@
         <h3>Gloves</h3>
         <table>
             <tr>
-                <th>Brand</th>
                 <th>Size</th>
                 <th>Total</th>
             </tr>
             {% for glove in gloves %}
             <tr id='orange' onclick="location.href='{{glove.url}}'">
-                <td>{{ glove.brand }}</td>
                 <td>{{ glove.size }}</td>
                 <td>{{ glove.gloveAmount }}</td>
             </tr>
@@ -166,13 +197,11 @@
         <h3>Hoods</h3>
         <table>
             <tr>
-                <th>Brand</th>
                 <th>Size</th>
                 <th>Total</th>
             </tr>
             {% for hood in hoods %}
             <tr id='blue' onclick="location.href='{{hood.url}}'">
-                <td>{{ hood.brand }}</td>
                 <td>{{ hood.size }}</td>
                 <td>{{ hood.hoodAmount }}</td>
             </tr>
@@ -181,7 +210,15 @@
         <br>
     </div>
     <div id='csv' onclick="saveCSV()">
-        <p>Export CSV</p>
+        <p>Export Tables</p>
+    </div>
+    <div id='csv'>
+        <form action="{% url 'importData' %}" method='POST' enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for='csvFile'>Upload a CSV file</label>
+            <input type="file" id='file 'name="file">
+            <button tpye='submit'>Import CSV</button>
+        </form>
     </div>
 </body>
 </html>

@@ -1,0 +1,11 @@
+What To Do With Stock App
+
+1. Create a function that takes a CSV file and adds all the new data to the database and creates qr codes for the new data
+
+2. Create a page for signing out multiple items easier and signing in multiple items easier
+
+3. Add log in screen for app to prevent scrapers, keeping data private and most importantly stock isn't messed with
+
+4. Deploy app
+
+5. Ensure environment variable for the url of the page is created

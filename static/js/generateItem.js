@@ -10,9 +10,22 @@ function setOptions() {
         document.getElementById('gender').className='shown';
         document.getElementById('gBreak').className='shown';
         //Add options to brand
+        createOption(brandOptions, 'alder');
+        createOption(brandOptions, 'animal');
+        createOption(brandOptions, 'aquatec');
+        createOption(brandOptions, 'billabong');
+        createOption(brandOptions, 'cskin');
+        createOption(brandOptions, 'gul');
         createOption(brandOptions, 'oneil');
-        createOption(brandOptions, 'twobarefeet');
+        createOption(brandOptions, 'ripcurl');
+        createOption(brandOptions, 'roxy');
+        createOption(brandOptions, 'sola');
         createOption(brandOptions, 'tiki');
+        createOption(brandOptions, 'typhoon');
+        createOption(brandOptions, 'twobarefeet');
+        createOption(brandOptions, 'west');
+        createOption(brandOptions, 'zion');
+        createOption(brandOptions, 'unknown');
         //Add options to size
         updateSizeOptions();
     }
@@ -42,14 +55,13 @@ function setOptions() {
     }
     else if(stockType.toLowerCase()=='boot') {
         console.log('Boots form page loaded');
-        //Add options to brand
-        createOption(brandOptions, 'cskin');
-        createOption(brandOptions, 'oneil');
-        //...//
         //Set size options
-        for(i=1; i<=12; i++) {
+        for(i=1; i<=13; i++) {
             createOption(sizeOptions, i.toString())
         }
+        //hide brand option
+        document.getElementById('brand').className='hidden'
+        document.getElementById('brandLabel').className='hidden'
         //Hide number option
         document.getElementById('num').className='hidden'
         document.getElementById('numLabel').className='hidden'
@@ -59,10 +71,9 @@ function setOptions() {
     }
     else if(stockType.toLowerCase()=='glove') {
         console.log('Gloves form page loaded');
-        //Add options to brand
-        createOption(brandOptions, 'cskin');
-        createOption(brandOptions, 'oneil');
-        //...//
+        //hide brand option
+        document.getElementById('brand').className='hidden'
+        document.getElementById('brandLabel').className='hidden'
         //Set size options
         createOption(sizeOptions, 'small');
         createOption(sizeOptions, 'medium');
@@ -77,10 +88,9 @@ function setOptions() {
     }
     else {
         console.log('Hoods form page loaded');
-        //Add options to brand
-        createOption(brandOptions, 'cskin');
-        createOption(brandOptions, 'oneil');
-        //...//
+        //hide brand option
+        document.getElementById('brand').className='hidden'
+        document.getElementById('brandLabel').className='hidden'
         //Set size options
         createOption(sizeOptions, 'small');
         createOption(sizeOptions, 'medium');

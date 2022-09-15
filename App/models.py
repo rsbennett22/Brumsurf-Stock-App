@@ -21,7 +21,7 @@ from django.core.validators import MinValueValidator, MinLengthValidator
 
 class StockItem(models.Model):
     stockType = models.CharField(max_length=15)
-    brand = models.CharField(max_length=30)
+    brand = models.CharField(max_length=30, default=None)
     size = models.CharField(max_length=10)
     onTrip = models.BooleanField(default=False)
     signedOut = models.BooleanField(default=False)
@@ -31,7 +31,6 @@ class StockItem(models.Model):
     qrCode = models.ImageField()
     url = models.URLField(default=None)
     number=0
-
     def __str__(self):
         return (self.stockType+'_'+self.brand+'_'+self.size+'_'+str(self.number))
 
@@ -53,6 +52,10 @@ class Surfskate(StockItem):
 
 class Boot(StockItem):
     bootAmount = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['size']
+
     def __str__(self):
         return (self.stockType+'_'+self.brand+'_'+self.size)
 
